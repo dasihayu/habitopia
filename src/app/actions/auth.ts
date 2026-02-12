@@ -78,6 +78,7 @@ export async function logout() {
 }
 
 import { getSession } from "@/lib/auth";
+import { generateDailyQuests } from "@/lib/quest-engine";
 
 export async function completeOnboarding(formData: FormData) {
     const session = await getSession();
@@ -97,6 +98,9 @@ export async function completeOnboarding(formData: FormData) {
                 isOnboarded: true,
             },
         });
+
+        // Generate first week of quests (or just first day for now as per system logic)
+        await generateDailyQuests(session.userId);
 
         revalidatePath("/dashboard");
     } catch (e) {
