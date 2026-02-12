@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum QuestType {
+  BINARY
+  DURATION
+  COUNT
+  AVOIDANCE
+  PROGRESSIVE
+  CHALLENGE
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+  LEGENDARY
+}
+
+enum Intensity {
+  CASUAL
+  BALANCED
+  HARDCORE
+}
+
+model User {
+  id                String            @id @default(cuid())
+  username          String            @unique
+  passwordHash      String
+  avatarUrl         String?
+  level             Int               @default(1)
+  xp                Int               @default(0)
+  streak            Int               @default(0)
+  lastLogin         DateTime?
+  isOnboarded       Boolean           @default(false)
+  
+  // Onboarding Preferences
+  interests         String[]          // Array of strings (Fitness, Coding, etc.)
+  intensity         Intensity         @default(BALANCED)
+  activeHours       String[]          // ["morning", "afternoon", "night"]
+
+  // Relations
+  quests            Quest[]
+  achievements      UserAchievement[]
+  questHistory      QuestHistory[]
+  
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+}
+
+model Quest {
+  id                String            @id @default(cuid())
+  userId            String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title             String
+  description       String
+  type              QuestType
+  difficulty        Difficulty
+  xpReward          Int
+  category          String
+  
+  // Metrics for different types
+  targetValue       Int?              // e.g., 25 for duration, 8 for count
+  currentValue      Int               @default(0)
+  
+  isCompleted       Boolean           @default(false)
+  expiresAt         DateTime
+  
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  history           QuestHistory[]
+}
+
+model Achievement {
+  id                String            @id @default(cuid())
+  name              String            @unique
+  description       String
+  icon              String            // SVG or Lucide Icon name
+  xpBonus           Int               @default(100)
+  requirementKey    String            // Used in code to check completion (e.g., "first_quest", "7_day_streak")
+  
+  users             UserAchievement[]
+}
+
+model UserAchievement {
+  id                String            @id @default(cuid())
+  userId            String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  achievementId     String
+  achievement       Achievement       @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  
+  unlockedAt        DateTime          @default(now())
+
+  @@unique([userId, achievementId])
+}
+
+model QuestHistory {
+  id                String            @id @default(cuid())
+  userId            String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  questId           String?
+  quest             Quest?            @relation(fields: [questId], references: [id])
+  
+  title             String
+  xpGained          Int
+  completedAt       DateTime          @default(now())
+}
