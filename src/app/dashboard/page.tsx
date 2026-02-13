@@ -11,20 +11,33 @@ async function getDashboardData() {
     const session = await getSession();
     if (!session) redirect("/login");
 
-    const activeQuests = await prisma.quest.findMany({
+    // Check if quests were already generated for today
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const existingQuests = await prisma.quest.findMany({
         where: {
             userId: session.userId,
-            isCompleted: false,
-            expiresAt: {
-                gt: new Date(),
+            createdAt: {
+                gte: startOfDay,
             },
+        },
+        orderBy: {
+            createdAt: "desc",
         },
     });
 
-    // If no active quests, generate new ones for the day
-    if (activeQuests.length === 0) {
-        await generateDailyQuests(session.userId);
+    // If quests exist for today (completed or not), return them
+    if (existingQuests.length > 0) {
+        const user = await prisma.user.findUnique({
+            where: { id: session.userId },
+            include: { quests: { where: { createdAt: { gte: startOfDay } } } }
+        });
+        return { user: user!, quests: existingQuests.filter((q: any) => !q.isCompleted) };
     }
+
+    // Only generate if absolutely no quests exist for today
+    await generateDailyQuests(session.userId);
 
     const user = await prisma.user.findUnique({
         where: { id: session.userId },
@@ -78,7 +91,7 @@ export default async function DashboardPage() {
                                 <button className="mt-4 text-primary font-bold text-sm">Generate Bonus Quests</button>
                             </div>
                         ) : (
-                            quests.slice(0, 3).map((quest) => (
+                            quests.slice(0, 3).map((quest: any) => (
                                 <div
                                     key={quest.id}
                                     className="glass p-6 rounded-2xl flex items-center gap-6 group hover:bg-white/[0.07] transition-all cursor-pointer border-white/5"

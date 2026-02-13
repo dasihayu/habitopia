@@ -43,11 +43,16 @@ model User {
   interests         String[]          // Array of strings (Fitness, Coding, etc.)
   intensity         Intensity         @default(BALANCED)
   activeHours       String[]          // ["morning", "afternoon", "night"]
-
+  
+  bio               String?           // [NEW] User biography
+  
   // Relations
   quests            Quest[]
   achievements      UserAchievement[]
   questHistory      QuestHistory[]
+  
+  followedBy        User[]            @relation("UserFollows")
+  following         User[]            @relation("UserFollows")
   
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
@@ -64,6 +69,8 @@ model Quest {
   difficulty        Difficulty
   xpReward          Int
   category          String
+  
+  isCustom          Boolean           @default(false) // [NEW] Distinguish user-created quests
   
   // Metrics for different types
   targetValue       Int?              // e.g., 25 for duration, 8 for count
