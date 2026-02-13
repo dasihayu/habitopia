@@ -5,9 +5,26 @@ import PlayerHUD from "@/components/dashboard/PlayerHUD";
 import { Sword, ArrowRight, Timer, CheckCircle, Flame } from "lucide-react";
 import Link from "next/link";
 
+import { generateDailyQuests } from "@/lib/quest-engine";
+
 async function getDashboardData() {
     const session = await getSession();
     if (!session) redirect("/login");
+
+    const activeQuests = await prisma.quest.findMany({
+        where: {
+            userId: session.userId,
+            isCompleted: false,
+            expiresAt: {
+                gt: new Date(),
+            },
+        },
+    });
+
+    // If no active quests, generate new ones for the day
+    if (activeQuests.length === 0) {
+        await generateDailyQuests(session.userId);
+    }
 
     const user = await prisma.user.findUnique({
         where: { id: session.userId },
@@ -15,9 +32,6 @@ async function getDashboardData() {
             quests: {
                 where: {
                     isCompleted: false,
-                    expiresAt: {
-                        gt: new Date(),
-                    },
                 },
                 orderBy: {
                     createdAt: "desc",

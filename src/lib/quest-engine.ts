@@ -40,15 +40,16 @@ const TEMPLATES: Record<string, QuestTemplate[]> = {
 };
 
 function getXPReward(difficulty: Difficulty, level: number): number {
-    const baseXP = {
+    const baseXP: Record<Difficulty, number> = {
         EASY: 100,
         MEDIUM: 250,
         HARD: 500,
         LEGENDARY: 1000,
-    }[difficulty];
+    };
+    const xp = baseXP[difficulty];
 
     // Increase XP slightly with level to feel progression
-    return Math.floor(baseXP * (1 + (level - 1) * 0.1));
+    return Math.floor(xp * (1 + (level - 1) * 0.1));
 }
 
 export async function generateDailyQuests(userId: string) {
@@ -61,7 +62,7 @@ export async function generateDailyQuests(userId: string) {
 
     // Get templates matching user interests
     let availableTemplates: QuestTemplate[] = [];
-    user.interests.forEach(interest => {
+    user.interests.forEach((interest: string) => {
         const templates = TEMPLATES[interest.toLowerCase()];
         if (templates) availableTemplates = [...availableTemplates, ...templates];
     });
