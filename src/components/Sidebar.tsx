@@ -32,12 +32,14 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
     const pathname = usePathname();
-    const { theme, setTheme } = useTheme();
+    const { theme, setTheme, resolvedTheme } = useTheme();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
-    // Handle responsive
+    // Handle responsive and mounting
     useEffect(() => {
+        setMounted(true);
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
             if (window.innerWidth < 768) {
@@ -163,16 +165,24 @@ export default function Sidebar() {
                 <div className="p-4 border-t border-border/50 space-y-2">
                     {/* Theme Toggle */}
                     <button
-                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                        onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
                         className={cn(
-                            "flex items-center gap-3 p-3 rounded-xl w-full transition-all text-muted-foreground hover:text-foreground hover:bg-muted",
+                            "flex items-center gap-3 p-3 rounded-xl w-full transition-all text-muted-foreground hover:text-foreground hover:bg-muted relative",
                             isCollapsed && "justify-center"
                         )}
                     >
-                        <Sun className="w-6 h-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 absolute" />
-                        <Moon className="w-6 h-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                        <div className="relative flex h-6 w-6 shrink-0 items-center justify-center">
+                            {mounted ? (
+                                <>
+                                    <Sun className="absolute h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                                    <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                                </>
+                            ) : (
+                                <Sun className="absolute h-6 w-6" /> // Placeholder until mounted
+                            )}
+                        </div>
                         {!isCollapsed && (
-                            <span className="ml-8 text-sm">Toggle Theme</span>
+                            <span className="text-sm">Toggle Theme</span>
                         )}
                     </button>
 
