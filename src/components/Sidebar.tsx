@@ -96,9 +96,12 @@ export default function Sidebar() {
                 className="fixed top-0 left-0 h-screen hidden md:flex flex-col z-50 border-r border-border bg-background/50 backdrop-blur-xl overflow-hidden"
             >
                 {/* Header / Toggle */}
-                <div className="h-20 flex flex-row items-center justify-between px-3 md:px-4 border-b border-border/50 shrink-0 relative overflow-visible">
+                <div className={cn(
+                    "h-20 flex flex-row items-center border-b border-border/50 shrink-0 relative overflow-hidden transition-all duration-300",
+                    isCollapsed ? "justify-center gap-[6px] px-0" : "justify-between px-3 md:px-4"
+                )}>
                     <div className="flex items-center overflow-hidden whitespace-nowrap">
-                        <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow shrink-0 z-10 transition-all duration-300">
+                        <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow shrink-0 z-10 transition-all duration-300">
                             H
                         </div>
                         <AnimatePresence>
@@ -119,17 +122,14 @@ export default function Sidebar() {
 
                     <button
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        className={cn(
-                            "p-1.5 hover:bg-muted rounded-lg text-muted-foreground transition-all shrink-0 flex items-center justify-center z-20 bg-background border border-border/50 md:border-transparent md:bg-transparent shadow-sm md:shadow-none",
-                            isCollapsed ? "absolute -right-3 top-1/2 -translate-y-1/2" : ""
-                        )}
+                        className="p-1.5 hover:bg-muted rounded-lg text-muted-foreground transition-all shrink-0 flex items-center justify-center z-20"
                         aria-label="Toggle Sidebar"
                     >
                         <motion.div
                             animate={{ rotate: isCollapsed ? 180 : 0 }}
                             transition={{ duration: 0.3 }}
                         >
-                            <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
+                            <ChevronLeft className="w-5 h-5" />
                         </motion.div>
                     </button>
                 </div>
