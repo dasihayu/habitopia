@@ -96,15 +96,9 @@ export default function Sidebar() {
                 className="fixed top-0 left-0 h-screen hidden md:flex flex-col z-50 border-r border-border bg-background/50 backdrop-blur-xl overflow-hidden"
             >
                 {/* Header / Toggle */}
-                <motion.div
-                    layout
-                    className={cn(
-                        "flex border-b border-border/50 shrink-0 overflow-hidden",
-                        isCollapsed ? "flex-col items-center justify-center py-4 gap-4" : "h-20 flex-row items-center justify-between px-4"
-                    )}
-                >
-                    <motion.div layout className="flex items-center overflow-hidden whitespace-nowrap shrink-0">
-                        <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow shrink-0">
+                <div className="h-20 flex flex-row items-center justify-between px-3 md:px-4 border-b border-border/50 shrink-0 relative overflow-visible">
+                    <div className="flex items-center overflow-hidden whitespace-nowrap">
+                        <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow shrink-0 z-10 transition-all duration-300">
                             H
                         </div>
                         <AnimatePresence>
@@ -121,21 +115,24 @@ export default function Sidebar() {
                                 </motion.span>
                             )}
                         </AnimatePresence>
-                    </motion.div>
+                    </div>
 
-                    <motion.button
-                        layout
+                    <button
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        className="p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors shrink-0 flex items-center justify-center"
+                        className={cn(
+                            "p-1.5 hover:bg-muted rounded-lg text-muted-foreground transition-all shrink-0 flex items-center justify-center z-20 bg-background border border-border/50 md:border-transparent md:bg-transparent shadow-sm md:shadow-none",
+                            isCollapsed ? "absolute -right-3 top-1/2 -translate-y-1/2" : ""
+                        )}
+                        aria-label="Toggle Sidebar"
                     >
                         <motion.div
                             animate={{ rotate: isCollapsed ? 180 : 0 }}
                             transition={{ duration: 0.3 }}
                         >
-                            <ChevronLeft className="w-5 h-5" />
+                            <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
                         </motion.div>
-                    </motion.button>
-                </motion.div>
+                    </button>
+                </div>
 
                 {/* Navigation */}
                 <div className="flex-1 py-6 px-4 space-y-2 overflow-y-auto overflow-x-hidden">
