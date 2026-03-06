@@ -97,46 +97,40 @@ export default function Sidebar() {
             >
                 {/* Header / Toggle */}
                 <div className="h-20 border-b border-border/50 shrink-0 relative w-full overflow-hidden">
-                    {/* Logo & Text Wrapper */}
+                    {/* Logo "H" */}
                     <motion.div
-                        className="flex items-center whitespace-nowrap overflow-hidden absolute top-1/2 -translate-y-1/2"
+                        className="absolute top-1/2 -translate-y-1/2 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow z-10"
                         animate={{
-                            left: isCollapsed ? "50%" : "16px",
-                            x: isCollapsed ? "-50%" : "0%"
+                            left: isCollapsed ? 20 : 16,
+                            width: isCollapsed ? 32 : 40,
+                            height: isCollapsed ? 32 : 40
                         }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                     >
-                        <motion.div
-                            className="bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow shrink-0 z-10"
-                            animate={{
-                                width: isCollapsed ? 32 : 40,
-                                height: isCollapsed ? 32 : 40
-                            }}
-                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                        >
-                            H
-                        </motion.div>
-                        <AnimatePresence>
-                            {!isCollapsed && (
-                                <motion.span
-                                    initial={{ opacity: 0, width: 0 }}
-                                    animate={{ opacity: 1, width: "auto" }}
-                                    exit={{ opacity: 0, width: 0 }}
-                                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                                    className="font-bold text-lg tracking-tight pl-3"
-                                >
-                                    Habitopia
-                                </motion.span>
-                            )}
-                        </AnimatePresence>
+                        H
                     </motion.div>
+
+                    {/* Text "Habitopia" */}
+                    <AnimatePresence>
+                        {!isCollapsed && (
+                            <motion.span
+                                initial={{ opacity: 0, width: 0 }}
+                                animate={{ opacity: 1, width: "auto" }}
+                                exit={{ opacity: 0, width: 0 }}
+                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                className="absolute top-1/2 -translate-y-1/2 left-[68px] font-bold text-lg tracking-tight whitespace-nowrap overflow-hidden block"
+                            >
+                                Habitopia
+                            </motion.span>
+                        )}
+                    </AnimatePresence>
 
                     {/* Collapse Button */}
                     <motion.button
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        className="hover:bg-muted rounded-md text-muted-foreground shrink-0 flex items-center justify-center z-20 absolute top-1/2 -translate-y-1/2"
+                        className="absolute top-1/2 -translate-y-1/2 hover:bg-muted rounded-md text-muted-foreground flex items-center justify-center z-20 overflow-hidden"
                         animate={{
-                            right: isCollapsed ? 4 : 16,
+                            right: isCollapsed ? 6 : 16,
                             width: isCollapsed ? 20 : 32,
                             height: isCollapsed ? 20 : 32
                         }}
@@ -146,7 +140,7 @@ export default function Sidebar() {
                         <motion.div
                             animate={{ rotate: isCollapsed ? 180 : 0 }}
                             transition={{ duration: 0.3, ease: "easeInOut" }}
-                            className="flex items-center justify-center"
+                            className="flex items-center justify-center shrink-0"
                         >
                             <motion.div
                                 animate={{
@@ -155,7 +149,7 @@ export default function Sidebar() {
                                 }}
                                 transition={{ duration: 0.3, ease: "easeInOut" }}
                             >
-                                <ChevronLeft className="w-full h-full" />
+                                <ChevronLeft className="w-full h-full text-current" />
                             </motion.div>
                         </motion.div>
                     </motion.button>
