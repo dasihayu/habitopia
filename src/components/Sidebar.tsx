@@ -96,16 +96,21 @@ export default function Sidebar() {
                 className="fixed top-0 left-0 h-screen hidden md:flex flex-col z-50 border-r border-border bg-background/50 backdrop-blur-xl overflow-hidden"
             >
                 {/* Header / Toggle */}
-                <div className="h-20 flex items-center justify-between px-4 border-b border-border/50 shrink-0">
-                    <div className="flex items-center overflow-hidden whitespace-nowrap">
-                        <div className="w-[32px] flex items-center justify-center shrink-0">
-                            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow">
-                                H
-                            </div>
+                <motion.div
+                    layout
+                    className={cn(
+                        "flex border-b border-border/50 shrink-0 overflow-hidden",
+                        isCollapsed ? "flex-col items-center justify-center py-4 gap-4" : "h-20 flex-row items-center justify-between px-4"
+                    )}
+                >
+                    <motion.div layout className="flex items-center overflow-hidden whitespace-nowrap shrink-0">
+                        <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow shrink-0">
+                            H
                         </div>
                         <AnimatePresence>
                             {!isCollapsed && (
                                 <motion.span
+                                    layout
                                     initial={{ opacity: 0, width: 0 }}
                                     animate={{ opacity: 1, width: "auto" }}
                                     exit={{ opacity: 0, width: 0 }}
@@ -116,11 +121,12 @@ export default function Sidebar() {
                                 </motion.span>
                             )}
                         </AnimatePresence>
-                    </div>
+                    </motion.div>
 
-                    <button
+                    <motion.button
+                        layout
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        className="p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors shrink-0"
+                        className="p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors shrink-0 flex items-center justify-center"
                     >
                         <motion.div
                             animate={{ rotate: isCollapsed ? 180 : 0 }}
@@ -128,11 +134,11 @@ export default function Sidebar() {
                         >
                             <ChevronLeft className="w-5 h-5" />
                         </motion.div>
-                    </button>
-                </div>
+                    </motion.button>
+                </motion.div>
 
                 {/* Navigation */}
-                <div className="flex-1 py-6 px-3 space-y-2 overflow-y-auto overflow-x-hidden">
+                <div className="flex-1 py-6 px-4 space-y-2 overflow-y-auto overflow-x-hidden">
                     {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
                         const isActive = pathname === href;
                         return (
@@ -140,7 +146,7 @@ export default function Sidebar() {
                                 key={href}
                                 href={href}
                                 className={cn(
-                                    "flex items-center p-3 rounded-xl transition-all group relative overflow-hidden",
+                                    "flex items-center p-2 rounded-xl transition-all group relative overflow-hidden",
                                     isActive
                                         ? "bg-primary/10 text-primary font-bold"
                                         : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -153,7 +159,7 @@ export default function Sidebar() {
                                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                     />
                                 )}
-                                <div className="w-[32px] flex items-center justify-center shrink-0 relative z-10">
+                                <div className="w-8 h-8 flex items-center justify-center shrink-0 relative z-10">
                                     <Icon className={cn("w-6 h-6", isActive && "text-primary")} />
                                 </div>
                                 <AnimatePresence>
@@ -179,9 +185,9 @@ export default function Sidebar() {
                     {/* Theme Toggle */}
                     <button
                         onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-                        className="flex items-center p-3 rounded-xl w-full transition-all text-muted-foreground hover:text-foreground hover:bg-muted overflow-hidden"
+                        className="flex items-center p-2 rounded-xl w-full transition-all text-muted-foreground hover:text-foreground hover:bg-muted overflow-hidden"
                     >
-                        <div className="w-[32px] flex h-6 shrink-0 items-center justify-center relative">
+                        <div className="w-8 flex h-8 shrink-0 items-center justify-center relative">
                             {mounted ? (
                                 <>
                                     <Sun className="absolute h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
@@ -209,9 +215,9 @@ export default function Sidebar() {
                     {/* Settings */}
                     <Link
                         href="/settings"
-                        className="flex items-center p-3 rounded-xl w-full transition-all text-muted-foreground hover:text-foreground hover:bg-muted overflow-hidden"
+                        className="flex items-center p-2 rounded-xl w-full transition-all text-muted-foreground hover:text-foreground hover:bg-muted overflow-hidden"
                     >
-                        <div className="w-[32px] flex shrink-0 items-center justify-center">
+                        <div className="w-8 h-8 flex shrink-0 items-center justify-center relative">
                             <Settings className="w-6 h-6" />
                         </div>
                         <AnimatePresence>
@@ -232,9 +238,9 @@ export default function Sidebar() {
                     {/* Logout */}
                     <form action={logout}>
                         <button
-                            className="flex items-center p-3 rounded-xl w-full transition-all text-red-500/70 hover:text-red-500 hover:bg-red-500/10 overflow-hidden"
+                            className="flex items-center p-2 rounded-xl w-full transition-all text-red-500/70 hover:text-red-500 hover:bg-red-500/10 overflow-hidden"
                         >
-                            <div className="w-[32px] flex shrink-0 items-center justify-center">
+                            <div className="w-8 h-8 flex shrink-0 items-center justify-center relative">
                                 <LogOut className="w-6 h-6" />
                             </div>
                             <AnimatePresence>
