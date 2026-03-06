@@ -99,19 +99,19 @@ export default function Sidebar() {
                 <div className="h-20 border-b border-border/50 shrink-0 relative w-full overflow-hidden">
                     {/* Logo & Text Wrapper */}
                     <motion.div
-                        layout
-                        className={cn(
-                            "flex items-center whitespace-nowrap overflow-hidden absolute top-1/2 -translate-y-1/2",
-                            isCollapsed ? "left-1/2 -translate-x-1/2" : "left-3 md:left-4 translate-x-0"
-                        )}
+                        className="flex items-center whitespace-nowrap overflow-hidden absolute top-1/2 -translate-y-1/2"
+                        animate={{
+                            left: isCollapsed ? "50%" : "16px",
+                            x: isCollapsed ? "-50%" : "0%"
+                        }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                     >
                         <motion.div
-                            layout
-                            className={cn(
-                                "bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow shrink-0 z-10",
-                                isCollapsed ? "w-8 h-8" : "w-8 h-8 md:w-10 md:h-10"
-                            )}
+                            className="bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow shrink-0 z-10"
+                            animate={{
+                                width: isCollapsed ? 32 : 40,
+                                height: isCollapsed ? 32 : 40
+                            }}
                             transition={{ duration: 0.3, ease: "easeInOut" }}
                         >
                             H
@@ -119,7 +119,6 @@ export default function Sidebar() {
                         <AnimatePresence>
                             {!isCollapsed && (
                                 <motion.span
-                                    layout
                                     initial={{ opacity: 0, width: 0 }}
                                     animate={{ opacity: 1, width: "auto" }}
                                     exit={{ opacity: 0, width: 0 }}
@@ -134,22 +133,30 @@ export default function Sidebar() {
 
                     {/* Collapse Button */}
                     <motion.button
-                        layout
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        className={cn(
-                            "hover:bg-muted rounded-md text-muted-foreground shrink-0 flex items-center justify-center z-20 absolute top-1/2 -translate-y-1/2",
-                            isCollapsed
-                                ? "right-1 w-5 h-5 hover:bg-transparent hover:text-foreground"
-                                : "right-3 md:right-4 p-1.5 w-8 h-8"
-                        )}
+                        className="hover:bg-muted rounded-md text-muted-foreground shrink-0 flex items-center justify-center z-20 absolute top-1/2 -translate-y-1/2"
+                        animate={{
+                            right: isCollapsed ? 4 : 16,
+                            width: isCollapsed ? 20 : 32,
+                            height: isCollapsed ? 20 : 32
+                        }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         aria-label="Toggle Sidebar"
                     >
                         <motion.div
                             animate={{ rotate: isCollapsed ? 180 : 0 }}
                             transition={{ duration: 0.3, ease: "easeInOut" }}
+                            className="flex items-center justify-center"
                         >
-                            <ChevronLeft className={cn("transition-all duration-300 ease-in-out", isCollapsed ? "w-4 h-4" : "w-5 h-5")} />
+                            <motion.div
+                                animate={{
+                                    width: isCollapsed ? 16 : 20,
+                                    height: isCollapsed ? 16 : 20
+                                }}
+                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                            >
+                                <ChevronLeft className="w-full h-full" />
+                            </motion.div>
                         </motion.div>
                     </motion.button>
                 </div>
