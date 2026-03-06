@@ -32,41 +32,41 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
 
     return (
         <div className="max-w-6xl mx-auto p-6 md:p-12 space-y-12">
-            <div className="relative">
-                <PlayerHUD user={user} />
-
-                {/* Profile Actions */}
-                <div className="absolute top-0 right-0 flex gap-2">
-                    {isOwnProfile ? (
-                        <>
+            <div className="flex flex-col gap-4">
+                <PlayerHUD
+                    user={user}
+                    actions={
+                        isOwnProfile ? (
+                            <>
+                                <button
+                                    onClick={() => setIsEditModalOpen(true)}
+                                    className="glass p-3 rounded-xl hover:bg-white/10 transition-colors"
+                                    title="Edit Profile"
+                                >
+                                    <Pencil className="w-5 h-5 text-foreground/70" />
+                                </button>
+                                <button
+                                    className="glass p-3 rounded-xl hover:bg-white/10 transition-colors"
+                                    title="Share Profile"
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(`${window.location.origin}/profile/${user.username}`);
+                                        toast.success("Profile link copied!");
+                                    }}
+                                >
+                                    <Share2 className="w-5 h-5 text-foreground/70" />
+                                </button>
+                            </>
+                        ) : (
                             <button
-                                onClick={() => setIsEditModalOpen(true)}
-                                className="glass p-3 rounded-xl hover:bg-white/10 transition-colors"
-                                title="Edit Profile"
+                                onClick={handleFollow}
+                                className={`glass px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-colors ${isFollowing ? 'bg-primary/20 text-primary' : 'hover:bg-white/10'}`}
                             >
-                                <Pencil className="w-5 h-5 text-foreground/70" />
+                                {isFollowing ? <UserCheck className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
+                                {isFollowing ? "Following" : "Follow"}
                             </button>
-                            <button
-                                className="glass p-3 rounded-xl hover:bg-white/10 transition-colors"
-                                title="Share Profile"
-                                onClick={() => {
-                                    navigator.clipboard.writeText(`${window.location.origin}/profile/${user.username}`);
-                                    toast.success("Profile link copied!");
-                                }}
-                            >
-                                <Share2 className="w-5 h-5 text-foreground/70" />
-                            </button>
-                        </>
-                    ) : (
-                        <button
-                            onClick={handleFollow}
-                            className={`glass px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-colors ${isFollowing ? 'bg-primary/20 text-primary' : 'hover:bg-white/10'}`}
-                        >
-                            {isFollowing ? <UserCheck className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
-                            {isFollowing ? "Following" : "Follow"}
-                        </button>
-                    )}
-                </div>
+                        )
+                    }
+                />
             </div>
 
             {/* Bio Section */}

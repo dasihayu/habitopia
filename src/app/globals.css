@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
+@variant dark (&:is(.dark *));
 
 :root {
   --background: #f8fafc;
@@ -14,6 +14,7 @@
   --border: #e2e8f0;
 }
 
+:root.dark,
 .dark {
   --background: #050505;
   --foreground: #f0f0f0;
@@ -36,13 +37,13 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
-  
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  
+
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
-  
+
   --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
 }
 
@@ -81,8 +82,15 @@ body {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in {

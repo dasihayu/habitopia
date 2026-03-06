@@ -84,7 +84,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                         cx="160"
                         cy="160"
                         r="120"
-                        className="stroke-white/5"
+                        className="stroke-foreground/10"
                         strokeWidth="12"
                         fill="transparent"
                     />
@@ -102,9 +102,9 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                 </svg>
 
                 {/* Time Display */}
-                <div className="absolute flex flex-col items-center">
+                <div className="absolute flex flex-col items-center justify-center inset-0 pointer-events-none">
                     <motion.span
-                        className="text-7xl font-black text-white"
+                        className="text-7xl font-black text-foreground"
                         key={seconds}
                         initial={{ scale: 0.95, opacity: 0.8 }}
                         animate={{ scale: 1, opacity: 1 }}
@@ -121,14 +121,14 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
             <div className="flex items-center gap-6">
                 <button
                     onClick={() => setIsMuted(!isMuted)}
-                    className="p-4 glass rounded-2xl text-foreground/50 hover:text-white transition"
+                    className="p-4 glass rounded-2xl text-foreground/50 hover:text-foreground transition hover:bg-foreground/5"
                 >
                     {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
                 </button>
 
                 <button
                     onClick={toggleTimer}
-                    className={`w-20 h-20 rounded-3xl flex items-center justify-center transition-all shadow-glow ${isActive ? "bg-white/10 text-white" : "bg-primary text-white"
+                    className={`w-20 h-20 rounded-3xl flex items-center justify-center transition-all shadow-glow ${isActive ? "bg-foreground/10 text-foreground" : "bg-primary text-primary-foreground"
                         }`}
                 >
                     {isActive ? <Pause className="fill-current w-8 h-8" /> : <Play className="fill-current w-8 h-8 ml-1" />}
@@ -136,7 +136,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
 
                 <button
                     onClick={resetTimer}
-                    className="p-4 glass rounded-2xl text-foreground/50 hover:text-white transition"
+                    className="p-4 glass rounded-2xl text-foreground/50 hover:text-foreground transition hover:bg-foreground/5"
                 >
                     <RotateCcw className="w-6 h-6" />
                 </button>
