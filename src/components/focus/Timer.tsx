@@ -11,6 +11,30 @@ interface TimerProps {
     questId?: string | null;
 }
 
+const Digit = ({ value }: { value: string }) => {
+    return (
+        <div className="relative h-[1.1em] w-[0.6em] flex items-center justify-center overflow-hidden">
+            <AnimatePresence mode="popLayout" initial={false}>
+                <motion.span
+                    key={value}
+                    initial={{ y: "100%", opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: "-100%", opacity: 0 }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                        mass: 0.8
+                    }}
+                    className="absolute"
+                >
+                    {value}
+                </motion.span>
+            </AnimatePresence>
+        </div>
+    );
+};
+
 export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
     const { timeLeft, setTimeLeft, isActive, setIsActive, questId: activeQuestId, setQuestId, resetTimer: contextReset } = useTimer();
     const [isMuted, setIsMuted] = useState(false);
@@ -65,11 +89,22 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
         }
     }, [timeLeft, isCompleted, isActive, handleFinish]);
 
-    const formatTime = (totalSeconds: number) => {
+    const getTimeParts = (totalSeconds: number) => {
         const mins = Math.floor(totalSeconds / 60);
         const secs = totalSeconds % 60;
-        return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+        
+        const mStr = mins.toString().padStart(2, '0');
+        const sStr = secs.toString().padStart(2, '0');
+        
+        return {
+            m1: mStr[0],
+            m2: mStr[1],
+            s1: sStr[0],
+            s2: sStr[1]
+        };
     };
+
+    const { m1, m2, s1, s2 } = getTimeParts(timeLeft);
 
     const circumference = 2 * Math.PI * 120;
     const progress = (timeLeft / (initialMinutes * 60)) * circumference;
@@ -102,14 +137,13 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
 
                 {/* Time Display */}
                 <div className="absolute flex flex-col items-center">
-                    <motion.span
-                        className="text-7xl font-black text-white"
-                        key={timeLeft}
-                        initial={{ scale: 0.95, opacity: 0.8 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                    >
-                        {formatTime(timeLeft)}
-                    </motion.span>
+                    <div className="text-7xl font-black text-white flex items-center tabular-nums">
+                        <Digit value={m1} />
+                        <Digit value={m2} />
+                        <span className="mx-1 opacity-50 relative -top-1">:</span>
+                        <Digit value={s1} />
+                        <Digit value={s2} />
+                    </div>
                     <span className="text-foreground/40 text-sm font-bold uppercase tracking-widest mt-2 flex items-center gap-2">
                         <Moon className="w-4 h-4" /> Focus Mode
                     </span>

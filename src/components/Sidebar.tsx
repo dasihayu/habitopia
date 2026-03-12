@@ -56,9 +56,14 @@ export default function Sidebar() {
     }, [isCollapsed, isMobile]);
 
     // Don't show sidebar on auth/onboarding/landing pages
-    const isAuthPage = ["/", "/login", "/register", "/onboarding"].includes(
-        pathname
-    );
+    const isAuthPage = ["/", "/login", "/register", "/onboarding"].includes(pathname);
+
+    // Sync CSS variable for main layout padding
+    useEffect(() => {
+        const targetWidth = (isMobile || isAuthPage) ? '0px' : (isCollapsed ? '80px' : '256px');
+        document.documentElement.style.setProperty('--sidebar-width', targetWidth);
+    }, [isCollapsed, isMobile, isAuthPage]); // Dependency on isAuthPage (stable bool) instead of pathname
+
     if (isAuthPage) return null;
 
     return (
