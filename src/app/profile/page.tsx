@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import ProfileView from "@/components/profile/ProfileView";
+import DashboardAnimations from "@/components/dashboard/DashboardAnimations";
 
 async function getProfileData() {
     const session = await getSession();
@@ -29,5 +30,9 @@ async function getProfileData() {
 
 export default async function ProfilePage() {
     const user = await getProfileData();
-    return <ProfileView user={user} isOwnProfile={true} />;
+    return (
+        <DashboardAnimations>
+            <ProfileView user={user} isOwnProfile={true} />
+        </DashboardAnimations>
+    );
 }

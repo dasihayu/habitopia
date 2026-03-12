@@ -18,8 +18,10 @@ export const metadata: Metadata = {
   description: "The self-generating productivity RPG system.",
 };
 
+import PageTransitionWrapper from "@/components/ui/PageTransitionWrapper";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { TimerProvider } from "@/components/providers/TimerProvider";
 
 export default function RootLayout({
   children,
@@ -35,11 +37,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Sidebar />
-          <main className="md:pl-20 pb-24 md:pb-0 min-h-screen transition-all duration-300">
-            {children}
-          </main>
-          <Toaster />
+          <TimerProvider>
+            <Sidebar />
+            <main
+              style={{ paddingLeft: "var(--sidebar-width)" }}
+              className="pb-32 md:pb-0 min-h-screen transition-all duration-200 ease-out flex flex-col"
+            >
+              {children}
+            </main>
+            <Toaster />
+          </TimerProvider>
         </ThemeProvider>
       </body>
     </html>

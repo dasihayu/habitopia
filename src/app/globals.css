@@ -1,13 +1,38 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
+  --background: #f1f5f9;
+  --foreground: #0f172a;
+  --card: rgba(255, 255, 255, 0.6);
+  --card-border: rgba(255, 255, 255, 0.7);
+  --card-hover: rgba(255, 255, 255, 0.9);
+  --card-border-hover: rgba(255, 255, 255, 1);
+  --primary: #4f46e5;
+  --accent: #9333ea;
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --sidebar-width: 256px;
+}
+
+.dark {
   --background: #050505;
   --foreground: #f0f0f0;
   --card: rgba(255, 255, 255, 0.05);
   --card-border: rgba(255, 255, 255, 0.1);
+  --card-hover: rgba(255, 255, 255, 0.08);
+  --card-border-hover: rgba(255, 255, 255, 0.2);
   --primary: #6366f1;
   --accent: #a855f7;
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
+
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 0px;
+  }
+}
+
 
 @theme inline {
   --color-background: var(--background);
@@ -16,13 +41,13 @@
   --color-card-border: var(--card-border);
   --color-primary: var(--primary);
   --color-accent: var(--accent);
-  
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  
+
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
-  
+
   --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
 }
 
@@ -32,6 +57,7 @@ body {
   font-family: var(--font-geist-sans);
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Glassmorphism Utilities */
@@ -40,12 +66,12 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--card-border);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: var(--shadow-glass);
 }
 
 .glass-hover:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--card-hover);
+  border-color: var(--card-border-hover);
   transition: all 0.3s ease;
 }
 
@@ -56,13 +82,21 @@ body {
 .gradient-text {
   background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in {
