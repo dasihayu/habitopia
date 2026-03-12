@@ -24,6 +24,35 @@ export default function Header() {
         { name: "Pricing", href: "#pricing" }
     ];
 
+    const menuVariants = {
+        closed: {
+            opacity: 0,
+            scale: 0.95,
+            y: -10,
+            transition: {
+                staggerChildren: 0.05,
+                staggerDirection: -1
+            }
+        },
+        open: {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 30,
+                staggerChildren: 0.1,
+                delayChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        closed: { opacity: 0, x: -10 },
+        open: { opacity: 1, x: 0 }
+    };
+
     return (
         <header className="fixed top-0 left-0 right-0 z-[999] pointer-events-none flex justify-center px-3 sm:px-6">
             <div
@@ -97,31 +126,45 @@ export default function Header() {
                 {/* Mobile Navigation Drawer */}
                 <AnimatePresence>
                     {isMobileMenuOpen && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                            className="absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-t border-white/10 md:hidden p-8 flex flex-col gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[1000] origin-top transform-gpu"
-                        >
-                            {navLinks.map((item) => (
-                                <Link
-                                    key={item.name}
-                                    href={item.href}
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="text-lg font-bold text-foreground/80 hover:text-primary transition-colors active:translate-x-2"
-                                >
-                                    {item.name}
-                                </Link>
-                            ))}
-                            <Link
-                                href="/login"
+                        <>
+                            {/* Backdrop overlay */}
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="text-lg font-bold text-primary active:translate-x-2 border-t border-white/5 pt-4"
+                                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[-1] md:hidden"
+                            />
+                            
+                            <motion.div
+                                variants={menuVariants}
+                                initial="closed"
+                                animate="open"
+                                exit="closed"
+                                className="absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-t border-white/10 md:hidden p-8 flex flex-col gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[1000] origin-top transform-gpu"
                             >
-                                Sign In
-                            </Link>
-                        </motion.div>
+                                {navLinks.map((item) => (
+                                    <motion.div key={item.name} variants={itemVariants}>
+                                        <Link
+                                            href={item.href}
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className="text-lg font-bold text-foreground/80 hover:text-primary transition-colors active:translate-x-2 block"
+                                        >
+                                            {item.name}
+                                        </Link>
+                                    </motion.div>
+                                ))}
+                                <motion.div variants={itemVariants} className="pt-4 border-t border-white/5">
+                                    <Link
+                                        href="/login"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="text-lg font-bold text-primary active:translate-x-2 block"
+                                    >
+                                        Sign In
+                                    </Link>
+                                </motion.div>
+                            </motion.div>
+                        </>
                     )}
                 </AnimatePresence>
             </div>
