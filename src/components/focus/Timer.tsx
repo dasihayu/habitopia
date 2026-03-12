@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, RotateCcw, CheckCircle, Volume2, VolumeX, Moon } from "lucide-react";
 import { completeQuest } from "@/app/actions/quests";
+import { useTimer } from "@/components/providers/TimerProvider";
 
 interface TimerProps {
     initialMinutes?: number;
@@ -11,16 +12,22 @@ interface TimerProps {
 }
 
 export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
-    const [seconds, setSeconds] = useState(initialMinutes * 60);
-    const [isActive, setIsActive] = useState(false);
+    const { timeLeft, setTimeLeft, isActive, setIsActive, questId: activeQuestId, setQuestId, resetTimer: contextReset } = useTimer();
     const [isMuted, setIsMuted] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
 
+    // Initialize questId if provided and not already playing something else
+    useEffect(() => {
+        if (questId && questId !== activeQuestId && !isActive) {
+            setQuestId(questId);
+        }
+    }, [questId, activeQuestId, isActive, setQuestId]);
+
     // Sync with tab title
     useEffect(() => {
-        if (isActive && seconds > 0) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
+        if (isActive && timeLeft > 0) {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
             document.title = `(${mins}:${secs < 10 ? "0" : ""}${secs}) Habitopia | Focus`;
         } else {
             document.title = "Habitopia | Focus";
@@ -28,13 +35,12 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
         return () => {
             document.title = "Habitopia | Productivity RPG";
         };
-    }, [isActive, seconds]);
+    }, [isActive, timeLeft]);
 
     const toggleTimer = () => setIsActive(!isActive);
 
     const resetTimer = () => {
-        setIsActive(false);
-        setSeconds(initialMinutes * 60);
+        contextReset(initialMinutes);
         setIsCompleted(false);
     };
 
@@ -45,26 +51,19 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
             // Audio notification could go here
         }
 
-        if (questId) {
-            await completeQuest(questId);
+        if (activeQuestId) {
+            await completeQuest(activeQuestId);
+            setQuestId(undefined);
         }
-    }, [questId, isMuted]);
+    }, [activeQuestId, isMuted, setIsActive, setQuestId]);
 
+    // Check completion condition
     useEffect(() => {
-        let interval: NodeJS.Timeout | null = null;
-
-        if (isActive && seconds > 0) {
-            interval = setInterval(() => {
-                setSeconds((prev) => prev - 1);
-            }, 1000);
-        } else if (seconds === 0 && !isCompleted) {
+        if (timeLeft === 0 && !isCompleted && !isActive) {
+            // Note: TimerContext sets isActive to false when timeLeft hit 0
             handleFinish();
         }
-
-        return () => {
-            if (interval) clearInterval(interval);
-        };
-    }, [isActive, seconds, isCompleted, handleFinish]);
+    }, [timeLeft, isCompleted, isActive, handleFinish]);
 
     const formatTime = (totalSeconds: number) => {
         const mins = Math.floor(totalSeconds / 60);
@@ -73,7 +72,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
     };
 
     const circumference = 2 * Math.PI * 120;
-    const progress = (seconds / (initialMinutes * 60)) * circumference;
+    const progress = (timeLeft / (initialMinutes * 60)) * circumference;
 
     return (
         <div className="flex flex-col items-center justify-center space-y-12">
@@ -84,7 +83,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                         cx="160"
                         cy="160"
                         r="120"
-                        className="stroke-foreground/10"
+                        className="stroke-white/5"
                         strokeWidth="12"
                         fill="transparent"
                     />
@@ -102,14 +101,14 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                 </svg>
 
                 {/* Time Display */}
-                <div className="absolute flex flex-col items-center justify-center inset-0 pointer-events-none">
+                <div className="absolute flex flex-col items-center">
                     <motion.span
-                        className="text-7xl font-black text-foreground"
-                        key={seconds}
+                        className="text-7xl font-black text-white"
+                        key={timeLeft}
                         initial={{ scale: 0.95, opacity: 0.8 }}
                         animate={{ scale: 1, opacity: 1 }}
                     >
-                        {formatTime(seconds)}
+                        {formatTime(timeLeft)}
                     </motion.span>
                     <span className="text-foreground/40 text-sm font-bold uppercase tracking-widest mt-2 flex items-center gap-2">
                         <Moon className="w-4 h-4" /> Focus Mode
@@ -119,27 +118,33 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
 
             {/* Controls */}
             <div className="flex items-center gap-6">
-                <button
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                     onClick={() => setIsMuted(!isMuted)}
-                    className="p-4 glass rounded-2xl text-foreground/50 hover:text-foreground transition hover:bg-foreground/5"
+                    className="p-4 glass rounded-2xl text-foreground/50 hover:text-white transition cursor-pointer"
                 >
                     {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
-                </button>
+                </motion.button>
 
-                <button
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={toggleTimer}
-                    className={`w-20 h-20 rounded-3xl flex items-center justify-center transition-all shadow-glow ${isActive ? "bg-foreground/10 text-foreground" : "bg-primary text-primary-foreground"
+                    className={`w-20 h-20 rounded-3xl flex items-center justify-center transition-shadow shadow-glow cursor-pointer ${isActive ? "bg-white/10 text-white" : "bg-primary text-white"
                         }`}
                 >
                     {isActive ? <Pause className="fill-current w-8 h-8" /> : <Play className="fill-current w-8 h-8 ml-1" />}
-                </button>
+                </motion.button>
 
-                <button
+                <motion.button
+                    whileHover={{ scale: 1.1, rotate: -15 }}
+                    whileTap={{ scale: 0.9, rotate: -45 }}
                     onClick={resetTimer}
-                    className="p-4 glass rounded-2xl text-foreground/50 hover:text-foreground transition hover:bg-foreground/5"
+                    className="p-4 glass rounded-2xl text-foreground/50 hover:text-white transition cursor-pointer"
                 >
                     <RotateCcw className="w-6 h-6" />
-                </button>
+                </motion.button>
             </div>
 
             {/* Completion Modal / State */}
@@ -153,12 +158,14 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                         <CheckCircle className="w-12 h-12 text-primary mx-auto" />
                         <h4 className="text-2xl font-bold">Focus Session Complete</h4>
                         <p className="text-foreground/50">Great work! Your quest has been rewarded with XP.</p>
-                        <button
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                             onClick={resetTimer}
-                            className="px-8 py-3 bg-primary rounded-xl font-bold shadow-glow"
+                            className="px-8 py-3 bg-primary rounded-xl font-bold shadow-glow text-white w-full cursor-pointer"
                         >
                             Start Another Session
-                        </button>
+                        </motion.button>
                     </motion.div>
                 )}
             </AnimatePresence>

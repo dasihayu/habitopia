@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { logout } from "@/app/actions/auth";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 
 const NAV_ITEMS = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -32,14 +32,12 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
     const pathname = usePathname();
-    const { theme, setTheme, resolvedTheme } = useTheme();
+    const { theme, setTheme } = useTheme();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const [mounted, setMounted] = useState(false);
 
-    // Handle responsive and mounting
+    // Handle responsive
     useEffect(() => {
-        setMounted(true);
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
             if (window.innerWidth < 768) {
@@ -52,16 +50,21 @@ export default function Sidebar() {
     }, []);
 
     // Don't show sidebar on auth/onboarding/landing pages
-    const isAuthPage = ["/", "/login", "/register", "/onboarding"].includes(
-        pathname
-    );
+    const isAuthPage = ["/", "/login", "/register", "/onboarding"].includes(pathname);
+
+    // Sync CSS variable for main layout padding
+    useEffect(() => {
+        const targetWidth = (isMobile || isAuthPage) ? '0px' : (isCollapsed ? '80px' : '256px');
+        document.documentElement.style.setProperty('--sidebar-width', targetWidth);
+    }, [isCollapsed, isMobile, isAuthPage]); // Dependency on isAuthPage (stable bool) instead of pathname
+
     if (isAuthPage) return null;
 
     return (
         <>
             {/* Mobile Bottom Nav */}
-            <nav className="fixed bottom-0 left-0 w-full z-50 px-4 pb-6 md:hidden">
-                <div className="glass flex items-center justify-around p-3 rounded-2xl border-white/10 shadow-lg bg-background/80 backdrop-blur-md">
+            <nav className="fixed bottom-0 left-0 w-full z-[100] px-4 pb-6 md:hidden">
+                <div className="glass flex items-center justify-around p-3 rounded-2xl border-white/10 shadow-2xl bg-background/80 backdrop-blur-md">
                     {NAV_ITEMS.map(({ href, icon: Icon }) => {
                         const isActive = pathname === href;
                         return (
@@ -69,7 +72,7 @@ export default function Sidebar() {
                                 key={href}
                                 href={href}
                                 className={cn(
-                                    "p-3 rounded-xl transition-all",
+                                    "p-3 rounded-xl transition-all hover:scale-110 active:scale-95",
                                     isActive
                                         ? "bg-primary/20 text-primary shadow-glow ring-1 ring-primary/30"
                                         : "text-foreground/50 hover:text-foreground/80 hover:bg-muted"
@@ -81,7 +84,7 @@ export default function Sidebar() {
                     })}
                     <Link
                         href="/settings"
-                        className="p-3 rounded-xl text-foreground/50 hover:text-foreground/80 hover:bg-muted"
+                        className="p-3 rounded-xl text-foreground/50 hover:text-foreground/80 hover:bg-muted transition-all hover:scale-110 active:scale-95"
                     >
                         <Settings className="w-6 h-6" />
                     </Link>
@@ -92,136 +95,116 @@ export default function Sidebar() {
             <motion.aside
                 initial={false}
                 animate={{ width: isCollapsed ? 80 : 256 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="fixed top-0 left-0 h-screen hidden md:flex flex-col z-50 border-r border-border bg-background/50 backdrop-blur-xl overflow-hidden"
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className={cn(
+                    "fixed top-0 left-0 h-screen hidden md:flex flex-col z-50 border-r border-border bg-background/50 backdrop-blur-xl"
+                )}
             >
                 {/* Header / Toggle */}
-                <div className="h-20 border-b border-border/50 shrink-0 relative w-full overflow-hidden">
-                    {/* Logo "H" */}
-                    <motion.div
-                        className="absolute top-1/2 -translate-y-1/2 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow z-10"
-                        animate={{
-                            left: isCollapsed ? 20 : 16,
-                            width: isCollapsed ? 32 : 40,
-                            height: isCollapsed ? 32 : 40
-                        }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                    >
-                        H
+                <div className={cn(
+                    "flex border-b border-border/50 relative overflow-hidden shrink-0 transition-all duration-200",
+                    isCollapsed ? "flex-col items-center justify-center h-28 gap-4 py-4" : "flex-row items-center h-20 px-4"
+                )}>
+                    <motion.div layout className="flex items-center justify-center shrink-0">
+                        <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow shrink-0 relative z-10">
+                            H
+                        </div>
                     </motion.div>
 
-                    {/* Text "Habitopia" */}
-                    <AnimatePresence>
+                    <AnimatePresence mode="popLayout" initial={false}>
                         {!isCollapsed && (
-                            <motion.span
-                                initial={{ opacity: 0, width: 0 }}
-                                animate={{ opacity: 1, width: "auto" }}
-                                exit={{ opacity: 0, width: 0 }}
-                                transition={{ duration: 0.3, ease: "easeInOut" }}
-                                className="absolute top-1/2 -translate-y-1/2 left-[68px] font-bold text-lg tracking-tight whitespace-nowrap overflow-hidden block"
+                            <motion.div
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -10 }}
+                                transition={{ duration: 0.2 }}
+                                className="flex items-center gap-3 overflow-hidden flex-1 ml-3"
                             >
-                                Habitopia
-                            </motion.span>
+                                <span className="font-bold text-lg tracking-tight whitespace-nowrap text-foreground">Habitopia</span>
+                            </motion.div>
                         )}
                     </AnimatePresence>
 
-                    {/* Collapse Button */}
-                    <motion.button
+                    <button
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        className="absolute top-1/2 -translate-y-1/2 hover:bg-muted rounded-md text-muted-foreground flex items-center justify-center z-20 overflow-hidden"
-                        animate={{
-                            right: isCollapsed ? 6 : 16,
-                            width: isCollapsed ? 20 : 32,
-                            height: isCollapsed ? 20 : 32
-                        }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        aria-label="Toggle Sidebar"
+                        className={cn(
+                            "p-2 hover:bg-foreground/5 rounded-lg text-muted-foreground transition-all duration-200 ease-out hover:text-foreground active:scale-95 shrink-0 z-10",
+                            isCollapsed ? "" : "ml-auto"
+                        )}
                     >
-                        <motion.div
-                            animate={{ rotate: isCollapsed ? 180 : 0 }}
-                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                            className="flex items-center justify-center shrink-0"
-                        >
-                            <motion.div
-                                animate={{
-                                    width: isCollapsed ? 16 : 20,
-                                    height: isCollapsed ? 16 : 20
-                                }}
-                                transition={{ duration: 0.3, ease: "easeInOut" }}
-                            >
-                                <ChevronLeft className="w-full h-full text-current" />
-                            </motion.div>
-                        </motion.div>
-                    </motion.button>
+                        <ChevronLeft className={cn("w-5 h-5 transition-transform duration-300", isCollapsed && "rotate-180")} />
+                    </button>
                 </div>
 
                 {/* Navigation */}
-                <div className="flex-1 py-6 px-4 space-y-2 overflow-y-auto overflow-x-hidden">
-                    {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-                        const isActive = pathname === href;
-                        return (
-                            <Link
-                                key={href}
-                                href={href}
-                                className={cn(
-                                    "flex items-center p-2 rounded-xl transition-all group relative overflow-hidden",
-                                    isActive
-                                        ? "bg-primary/10 text-primary font-bold"
-                                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                                )}
-                            >
-                                {isActive && (
-                                    <motion.div
-                                        layoutId="activeTab"
-                                        className="absolute inset-0 bg-primary/10 rounded-xl"
-                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                    />
-                                )}
-                                <div className="w-8 h-8 flex items-center justify-center shrink-0 relative z-10">
-                                    <Icon className={cn("w-6 h-6", isActive && "text-primary")} />
-                                </div>
-                                <AnimatePresence>
-                                    {!isCollapsed && (
-                                        <motion.span
-                                            initial={{ opacity: 0, width: 0, marginLeft: 0 }}
-                                            animate={{ opacity: 1, width: "auto", marginLeft: 12 }}
-                                            exit={{ opacity: 0, width: 0, marginLeft: 0 }}
-                                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                                            className="whitespace-nowrap overflow-hidden relative z-10"
-                                        >
-                                            {label}
-                                        </motion.span>
+                <LayoutGroup>
+                    <div className="flex-1 py-6 px-3 space-y-2 overflow-y-auto">
+                        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+                            const isActive = pathname === href;
+                            return (
+                                <Link
+                                    key={href}
+                                    href={href}
+                                    className={cn(
+                                        "flex items-center h-12 rounded-xl group relative overflow-hidden transition-colors duration-200",
+                                        isActive
+                                            ? "bg-primary/10 text-primary font-bold shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] ring-1 ring-primary/20"
+                                            : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"
                                     )}
-                                </AnimatePresence>
-                            </Link>
-                        );
-                    })}
-                </div>
+                                >
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="activeTab"
+                                            className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-xl pointer-events-none"
+                                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                        />
+                                    )}
+
+                                    {/* Icon Container - Fixed width keeps icon position stable relative to sidebar edge */}
+                                    <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
+                                        <Icon className={cn("w-6 h-6 transition-transform group-hover:scale-110", isActive && "text-primary")} />
+                                    </div>
+
+                                    <AnimatePresence mode="popLayout" initial={false}>
+                                        {!isCollapsed && (
+                                            <motion.span
+                                                layout
+                                                initial={{ opacity: 0, x: -10 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: -10 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="whitespace-nowrap relative z-10 overflow-hidden text-sm"
+                                            >
+                                                {label}
+                                            </motion.span>
+                                        )}
+                                    </AnimatePresence>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </LayoutGroup>
 
                 {/* Footer Actions */}
-                <div className="p-4 border-t border-border/50 space-y-2 overflow-x-hidden">
+                <div className="p-4 border-t border-border/50 space-y-2 shrink-0">
                     {/* Theme Toggle */}
                     <button
-                        onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-                        className="flex items-center p-2 rounded-xl w-full transition-all text-muted-foreground hover:text-foreground hover:bg-muted overflow-hidden"
+                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                        className="flex items-center h-12 rounded-xl w-full text-muted-foreground hover:text-foreground hover:bg-foreground/5 relative overflow-hidden group cursor-pointer transition-colors duration-200"
                     >
-                        <div className="w-8 flex h-8 shrink-0 items-center justify-center relative">
-                            {mounted ? (
-                                <>
-                                    <Sun className="absolute h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                                    <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                                </>
-                            ) : (
-                                <Sun className="absolute h-6 w-6" /> // Placeholder until mounted
-                            )}
+                        <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
+                            <div className="relative w-6 h-6 transition-transform group-hover:scale-110">
+                                <Sun className="w-6 h-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 absolute" />
+                                <Moon className="w-6 h-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 absolute" />
+                            </div>
                         </div>
-                        <AnimatePresence>
+                        <AnimatePresence mode="popLayout" initial={false}>
                             {!isCollapsed && (
                                 <motion.span
-                                    initial={{ opacity: 0, width: 0, marginLeft: 0 }}
-                                    animate={{ opacity: 1, width: "auto", marginLeft: 12 }}
-                                    exit={{ opacity: 0, width: 0, marginLeft: 0 }}
-                                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -10 }}
+                                    transition={{ duration: 0.2 }}
                                     className="whitespace-nowrap overflow-hidden text-sm"
                                 >
                                     Toggle Theme
@@ -233,19 +216,19 @@ export default function Sidebar() {
                     {/* Settings */}
                     <Link
                         href="/settings"
-                        className="flex items-center p-2 rounded-xl w-full transition-all text-muted-foreground hover:text-foreground hover:bg-muted overflow-hidden"
+                        className="flex items-center h-12 rounded-xl w-full text-muted-foreground hover:text-foreground hover:bg-foreground/5 relative overflow-hidden group transition-colors duration-200"
                     >
-                        <div className="w-8 h-8 flex shrink-0 items-center justify-center relative">
-                            <Settings className="w-6 h-6" />
+                        <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
+                            <Settings className="w-6 h-6 transition-transform group-hover:scale-110" />
                         </div>
-                        <AnimatePresence>
+                        <AnimatePresence mode="popLayout" initial={false}>
                             {!isCollapsed && (
                                 <motion.span
-                                    initial={{ opacity: 0, width: 0, marginLeft: 0 }}
-                                    animate={{ opacity: 1, width: "auto", marginLeft: 12 }}
-                                    exit={{ opacity: 0, width: 0, marginLeft: 0 }}
-                                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                                    className="whitespace-nowrap overflow-hidden"
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -10 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="whitespace-nowrap overflow-hidden text-sm"
                                 >
                                     Settings
                                 </motion.span>
@@ -256,19 +239,19 @@ export default function Sidebar() {
                     {/* Logout */}
                     <form action={logout}>
                         <button
-                            className="flex items-center p-2 rounded-xl w-full transition-all text-red-500/70 hover:text-red-500 hover:bg-red-500/10 overflow-hidden"
+                            className="flex items-center h-12 rounded-xl w-full text-red-500/70 hover:text-red-500 hover:bg-red-500/10 relative overflow-hidden group cursor-pointer transition-colors duration-200"
                         >
-                            <div className="w-8 h-8 flex shrink-0 items-center justify-center relative">
-                                <LogOut className="w-6 h-6" />
+                            <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
+                                <LogOut className="w-6 h-6 transition-transform group-hover:scale-110" />
                             </div>
-                            <AnimatePresence>
+                            <AnimatePresence mode="popLayout" initial={false}>
                                 {!isCollapsed && (
                                     <motion.span
-                                        initial={{ opacity: 0, width: 0, marginLeft: 0 }}
-                                        animate={{ opacity: 1, width: "auto", marginLeft: 12 }}
-                                        exit={{ opacity: 0, width: 0, marginLeft: 0 }}
-                                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                                        className="whitespace-nowrap overflow-hidden"
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -10 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="whitespace-nowrap overflow-hidden text-sm font-medium"
                                     >
                                         Logout
                                     </motion.span>

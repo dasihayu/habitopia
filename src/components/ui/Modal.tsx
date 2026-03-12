@@ -47,16 +47,19 @@ export default function Modal({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={onClose}
-                        className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
+                        className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm pointer-events-none"
                     />
 
-                    {/* Modal Content */}
-                    <div className="fixed inset-0 z-[101] flex items-center justify-center p-4">
+                    {/* Modal Content Wrapper (Handles outside clicks) */}
+                    <div
+                        className="fixed inset-0 z-[101] flex items-center justify-center p-4 cursor-pointer"
+                        onClick={onClose}
+                    >
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            onClick={(e) => e.stopPropagation()}
                             className={cn(
                                 "relative w-full max-w-lg bg-background border border-border rounded-3xl shadow-2xl overflow-hidden glass",
                                 className

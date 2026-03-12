@@ -19,11 +19,25 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen p-6">
-            <div className="w-full max-w-md glass p-8 rounded-2xl animate-fade-in shadow-glow">
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold gradient-text">Welcome Back</h2>
-                    <p className="text-foreground/60">Continue your quest in Habitopia</p>
+        <div className="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 bg-background relative overflow-hidden">
+            {/* Background elements to match landing */}
+            <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
+                <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] bg-primary/20 rounded-full blur-[100px]" />
+                <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-accent/20 rounded-full blur-[100px]" />
+            </div>
+
+            <div className="w-full max-w-[400px] glass-premium p-6 sm:p-10 rounded-[2rem] animate-fade-in shadow-2xl relative z-10 border-white/5">
+                <div className="text-center mb-10">
+                    <Link href="/" className="inline-flex items-center gap-3 mb-8 group active:scale-95 transition-transform">
+                        <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-glow group-hover:scale-105 transition-transform">
+                            <span className="text-2xl font-bold text-white">H</span>
+                        </div>
+                        <span className="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
+                            Habitopia
+                        </span>
+                    </Link>
+                    <h2 className="text-3xl font-black gradient-text mb-2">Welcome Back</h2>
+                    <p className="text-foreground/50 text-sm">Continue your quest in the realm</p>
                 </div>
 
                 <form action={handleSubmit} className="space-y-6">
@@ -58,7 +72,7 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-4 bg-primary rounded-xl font-bold hover:brightness-110 transition shadow-glow flex items-center justify-center gap-2"
+                        className="w-full py-4 bg-primary text-white rounded-2xl font-black text-lg hover:brightness-110 active:scale-[0.98] transition-all shadow-glow flex items-center justify-center gap-2 overflow-hidden shimmer-effect"
                     >
                         {loading ? "Authenticating..." : "Enter World"}
                     </button>

@@ -1,31 +1,38 @@
 @import "tailwindcss";
 
-@variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f8fafc;
+  --background: #f1f5f9;
   --foreground: #0f172a;
-  --card: rgba(255, 255, 255, 0.8);
-  --card-border: rgba(0, 0, 0, 0.1);
+  --card: rgba(255, 255, 255, 0.6);
+  --card-border: rgba(255, 255, 255, 0.7);
+  --card-hover: rgba(255, 255, 255, 0.9);
+  --card-border-hover: rgba(255, 255, 255, 1);
   --primary: #4f46e5;
   --accent: #9333ea;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --border: #e2e8f0;
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --sidebar-width: 256px;
 }
 
-:root.dark,
 .dark {
   --background: #050505;
   --foreground: #f0f0f0;
   --card: rgba(255, 255, 255, 0.05);
   --card-border: rgba(255, 255, 255, 0.1);
+  --card-hover: rgba(255, 255, 255, 0.08);
+  --card-border-hover: rgba(255, 255, 255, 0.2);
   --primary: #6366f1;
   --accent: #a855f7;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --border: #1e293b;
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
+
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 0px;
+  }
+}
+
 
 @theme inline {
   --color-background: var(--background);
@@ -34,9 +41,6 @@
   --color-card-border: var(--card-border);
   --color-primary: var(--primary);
   --color-accent: var(--accent);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -53,6 +57,7 @@ body {
   font-family: var(--font-geist-sans);
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Glassmorphism Utilities */
@@ -61,23 +66,38 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--card-border);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: var(--shadow-glass);
+}
+
+.glass-premium {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
 }
 
 .glass-hover:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--card-hover);
+  border-color: var(--card-border-hover);
   transition: all 0.3s ease;
 }
 
 .text-glow {
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 .gradient-text {
   background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-  background-clip: text;
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -94,6 +114,90 @@ body {
   }
 }
 
+@keyframes mesh {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(2%, 2%, 0) scale(1.05); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.5s ease forwards;
 }
+
+.animate-mesh {
+  animation: mesh 30s ease-in-out infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0); /* Force GPU layer */
+}
+
+.animate-shine {
+  animation: shine 3s infinite;
+}
+
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform, opacity;
+}
+
+@keyframes magic-border {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.magic-border-wrapper {
+  position: relative;
+  overflow: hidden;
+  padding: 1px;
+}
+
+.magic-border-element {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  height: 150%;
+  transform: translate(-50%, -50%);
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    var(--color-primary) 25%,
+    transparent 50%,
+    var(--color-accent) 75%,
+    transparent 100%
+  );
+  animation: magic-border 4s linear infinite;
+}
+
+.shimmer-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
