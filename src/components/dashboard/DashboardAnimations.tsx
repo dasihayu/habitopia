@@ -8,12 +8,18 @@ export default function DashboardAnimations({ children }: { children: React.Reac
             initial="hidden"
             animate="visible"
             variants={{
-                hidden: { opacity: 0 },
+                hidden: { opacity: 0, scale: 0.98, y: 10 },
                 visible: {
                     opacity: 1,
+                    scale: 1,
+                    y: 0,
                     transition: {
-                        staggerChildren: 0.08,
+                        staggerChildren: 0.1,
                         delayChildren: 0.1,
+                        duration: 0.5,
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 25
                     }
                 }
             }}

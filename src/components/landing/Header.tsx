@@ -38,7 +38,7 @@ export default function Header() {
             <div
                 className={cn(
                     "pointer-events-auto relative flex flex-col",
-                    "transition-[max-width,margin,padding,border-radius,background,border-color,box-shadow,backdrop-filter] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]",
+                    "transition-[max-width,margin,padding,border-radius,background,border-color,box-shadow,backdrop-filter] duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]",
                     isScrolled || isMobileMenuOpen
                         ? "mt-3 w-full max-w-5xl rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]"
                         : "mt-0 w-full max-w-7xl rounded-none border border-transparent bg-transparent shadow-none"
@@ -46,7 +46,7 @@ export default function Header() {
             >
                 {/* Header Row */}
                 <div className={cn(
-                    "flex items-center justify-between w-full transition-[padding] duration-500",
+                    "flex items-center justify-between w-full transition-[padding] duration-400",
                     isScrolled || isMobileMenuOpen ? "py-2.5 px-5" : "py-4 sm:py-5 px-4 sm:px-6"
                 )}>
                     {/* Logo */}
@@ -107,20 +107,20 @@ export default function Header() {
                                 {isMobileMenuOpen ? (
                                     <motion.span
                                         key="close"
-                                        initial={{ rotate: -90, opacity: 0 }}
-                                        animate={{ rotate: 0, opacity: 1 }}
-                                        exit={{ rotate: 90, opacity: 0 }}
-                                        transition={{ duration: 0.15 }}
+                                        initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                                        animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                                        exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                                        transition={{ duration: 0.2, ease: "backOut" }}
                                     >
                                         <X className="w-6 h-6" />
                                     </motion.span>
                                 ) : (
                                     <motion.span
                                         key="menu"
-                                        initial={{ rotate: 90, opacity: 0 }}
-                                        animate={{ rotate: 0, opacity: 1 }}
-                                        exit={{ rotate: -90, opacity: 0 }}
-                                        transition={{ duration: 0.15 }}
+                                        initial={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                                        animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                                        exit={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                                        transition={{ duration: 0.2, ease: "backOut" }}
                                     >
                                         <Menu className="w-6 h-6" />
                                     </motion.span>
@@ -138,8 +138,8 @@ export default function Header() {
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                             transition={{
-                                height: { duration: 0.35, ease: [0.4, 0, 0.2, 1] },
-                                opacity: { duration: 0.25, ease: "easeInOut" }
+                                height: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
+                                opacity: { duration: 0.3, ease: "easeInOut" }
                             }}
                             className="md:hidden overflow-hidden w-full"
                         >

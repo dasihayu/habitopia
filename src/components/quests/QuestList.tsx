@@ -50,15 +50,21 @@ export default function QuestList({ initialQuests }: QuestListProps) {
                     quests.map((quest) => (
                         <motion.div
                             key={quest.id}
+                            layout
                             variants={{
-                                hidden: { opacity: 0, y: 30 },
-                                visible: { opacity: 1, y: 0 }
+                                hidden: { opacity: 0, scale: 0.95 },
+                                visible: { opacity: 1, scale: 1 }
                             }}
                             initial="hidden"
                             whileInView="visible"
                             viewport={{ once: true, margin: "-50px" }}
-                            exit={{ opacity: 0, scale: 0.95, height: 0, marginBottom: 0 }}
-                            transition={{ duration: 0.4, ease: "easeOut" }}
+                            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                            transition={{ 
+                                type: "spring",
+                                stiffness: 400,
+                                damping: 30,
+                                mass: 0.8
+                            }}
                             className="glass p-6 md:p-8 rounded-3xl flex flex-col md:flex-row items-center gap-8 group relative overflow-hidden"
                         >
                             {/* Visual Accent */}

@@ -23,6 +23,10 @@ export async function completeQuest(questId: string) {
                 return { error: "Unauthorized" };
             }
 
+            if (quest.expiresAt <= new Date()) {
+                return { error: "Quest has expired" };
+            }
+
             // 1. Mark quest as completed
             await tx.quest.update({
                 where: { id: questId },
