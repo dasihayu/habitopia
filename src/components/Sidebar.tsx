@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { logout } from "@/app/actions/auth";
 import { cn } from "@/lib/utils";
-import { motion, LayoutGroup } from "framer-motion";
+import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
 
 const NAV_ITEMS = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -29,9 +29,9 @@ const NAV_ITEMS = [
     { href: "/profile", label: "Profile", icon: User },
 ];
 
-const SIDEBAR_MOTION_SPRING = { type: "spring" as const, stiffness: 300, damping: 30, mass: 0.78 };
-const LABEL_TRANSITION_BASE = { type: "spring" as const, stiffness: 420, damping: 36, mass: 0.72 };
-const MICRO_TRANSITION = { duration: 0.18, ease: [0.22, 1, 0.36, 1] as const };
+const SIDEBAR_MOTION_SPRING = { type: "spring" as const, stiffness: 280, damping: 32, mass: 1 };
+const LABEL_TRANSITION_BASE = { type: "spring" as const, stiffness: 400, damping: 35, mass: 0.8 };
+const MICRO_TRANSITION = { duration: 0.2, ease: [0.4, 0, 0.2, 1] as const };
 
 export default function Sidebar() {
     const pathname = usePathname();
@@ -124,19 +124,20 @@ export default function Sidebar() {
                         </motion.div>
                     </motion.div>
 
-                    <motion.div
-                        initial={false}
-                        aria-hidden={isCollapsed}
-                        animate={{
-                            opacity: isCollapsed ? 0 : 1,
-                            x: isCollapsed ? -8 : 0,
-                            scale: isCollapsed ? 0.98 : 1,
-                        }}
-                        transition={getLabelTransition(0)}
-                        className={cn("flex items-center overflow-hidden flex-1 ml-3", isCollapsed && "pointer-events-none")}
-                    >
-                        <span className="font-bold text-lg tracking-tight whitespace-nowrap text-foreground">Habitopia</span>
-                    </motion.div>
+                    <AnimatePresence mode="wait">
+                        {!isCollapsed && (
+                            <motion.div
+                                key="habitopia-label"
+                                initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
+                                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                                exit={{ opacity: 0, x: -10, filter: "blur(4px)", transition: { duration: 0.15 } }}
+                                transition={getLabelTransition(0)}
+                                className="flex items-center overflow-hidden flex-1 ml-3"
+                            >
+                                <span className="font-bold text-lg tracking-tight whitespace-nowrap text-foreground">Habitopia</span>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
                     <motion.button
                         onClick={() => setIsCollapsed(false)}
@@ -202,22 +203,20 @@ export default function Sidebar() {
                                         <Icon className={cn("w-6 h-6 transition-transform group-hover:scale-110", isActive && "text-primary")} />
                                     </div>
 
-                                    <motion.span
-                                        initial={false}
-                                        aria-hidden={isCollapsed}
-                                        animate={{
-                                            opacity: isCollapsed ? 0 : 1,
-                                            x: isCollapsed ? -8 : 0,
-                                            scale: isCollapsed ? 0.985 : 1,
-                                        }}
-                                        transition={getLabelTransition(index)}
-                                        className={cn(
-                                            "whitespace-nowrap relative z-10 overflow-hidden text-sm",
-                                            isCollapsed && "pointer-events-none"
+                                    <AnimatePresence mode="wait">
+                                        {!isCollapsed && (
+                                            <motion.span
+                                                key={`label-${href}`}
+                                                initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
+                                                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                                                exit={{ opacity: 0, x: -10, filter: "blur(4px)", transition: { duration: 0.15 } }}
+                                                transition={getLabelTransition(index)}
+                                                className="whitespace-nowrap relative z-10 overflow-hidden text-sm"
+                                            >
+                                                {label}
+                                            </motion.span>
                                         )}
-                                    >
-                                        {label}
-                                    </motion.span>
+                                    </AnimatePresence>
                                 </Link>
                             );
                         })}
@@ -237,19 +236,20 @@ export default function Sidebar() {
                                 <Moon className="w-6 h-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 absolute" />
                             </div>
                         </div>
-                        <motion.span
-                            initial={false}
-                            aria-hidden={isCollapsed}
-                            animate={{
-                                opacity: isCollapsed ? 0 : 1,
-                                x: isCollapsed ? -8 : 0,
-                                scale: isCollapsed ? 0.985 : 1,
-                            }}
-                            transition={getLabelTransition(NAV_ITEMS.length)}
-                            className={cn("whitespace-nowrap overflow-hidden text-sm", isCollapsed && "pointer-events-none")}
-                        >
-                            Toggle Theme
-                        </motion.span>
+                        <AnimatePresence mode="wait">
+                            {!isCollapsed && (
+                                <motion.span
+                                    key="theme-label"
+                                    initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
+                                    animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                                    exit={{ opacity: 0, x: -10, filter: "blur(4px)", transition: { duration: 0.15 } }}
+                                    transition={getLabelTransition(NAV_ITEMS.length)}
+                                    className="whitespace-nowrap overflow-hidden text-sm"
+                                >
+                                    Toggle Theme
+                                </motion.span>
+                            )}
+                        </AnimatePresence>
                     </button>
 
                     {/* Settings */}
@@ -260,19 +260,20 @@ export default function Sidebar() {
                         <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
                             <Settings className="w-6 h-6 transition-transform group-hover:scale-110" />
                         </div>
-                        <motion.span
-                            initial={false}
-                            aria-hidden={isCollapsed}
-                            animate={{
-                                opacity: isCollapsed ? 0 : 1,
-                                x: isCollapsed ? -8 : 0,
-                                scale: isCollapsed ? 0.985 : 1,
-                            }}
-                            transition={getLabelTransition(NAV_ITEMS.length + 1)}
-                            className={cn("whitespace-nowrap overflow-hidden text-sm", isCollapsed && "pointer-events-none")}
-                        >
-                            Settings
-                        </motion.span>
+                        <AnimatePresence mode="wait">
+                            {!isCollapsed && (
+                                <motion.span
+                                    key="settings-label"
+                                    initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
+                                    animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                                    exit={{ opacity: 0, x: -10, filter: "blur(4px)", transition: { duration: 0.15 } }}
+                                    transition={getLabelTransition(NAV_ITEMS.length + 1)}
+                                    className="whitespace-nowrap overflow-hidden text-sm"
+                                >
+                                    Settings
+                                </motion.span>
+                            )}
+                        </AnimatePresence>
                     </Link>
 
                     {/* Logout */}
@@ -283,19 +284,20 @@ export default function Sidebar() {
                             <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
                                 <LogOut className="w-6 h-6 transition-transform group-hover:scale-110" />
                             </div>
-                            <motion.span
-                                initial={false}
-                                aria-hidden={isCollapsed}
-                                animate={{
-                                    opacity: isCollapsed ? 0 : 1,
-                                    x: isCollapsed ? -8 : 0,
-                                    scale: isCollapsed ? 0.985 : 1,
-                                }}
-                                transition={getLabelTransition(NAV_ITEMS.length + 2)}
-                                className={cn("whitespace-nowrap overflow-hidden text-sm font-medium", isCollapsed && "pointer-events-none")}
-                            >
-                                Logout
-                            </motion.span>
+                             <AnimatePresence mode="wait">
+                                {!isCollapsed && (
+                                    <motion.span
+                                        key="logout-label"
+                                        initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
+                                        animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                                        exit={{ opacity: 0, x: -10, filter: "blur(4px)", transition: { duration: 0.15 } }}
+                                        transition={getLabelTransition(NAV_ITEMS.length + 2)}
+                                        className="whitespace-nowrap overflow-hidden text-sm font-medium"
+                                    >
+                                        Logout
+                                    </motion.span>
+                                )}
+                            </AnimatePresence>
                         </button>
                     </form>
                 </div>
