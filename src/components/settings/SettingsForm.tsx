@@ -53,11 +53,11 @@ export default function SettingsForm({ user }: SettingsFormProps) {
                     <div className="relative">
                         <Camera className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20" />
                         <input
-                            name="avatarUrl"
-                            type="text"
-                            defaultValue={user.avatarUrl || ""}
+                            name="avatar"
+                            type="file"
+                            accept="image/*"
                             className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition font-medium"
-                            placeholder="https://example.com/image.png"
+
                         />
                     </div>
                     <p className="text-[10px] text-foreground/30 ml-1">Leave empty to use your default DiceBear avatar.</p>

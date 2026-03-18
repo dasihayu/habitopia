@@ -9,9 +9,26 @@ export async function updateProfile(formData: FormData) {
     if (!session) return { error: "Not authenticated" };
 
     const username = formData.get("username") as string;
-    const avatarUrl = formData.get("avatarUrl") as string;
+    const file = formData.get("avatar") as File;
+    console.log("FILE:", file);
 
     try {
+        let avatarUrl = undefined;
+
+         if (file && file.size > 0) {
+            const bytes = await file.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+
+            const fileName = Date.now() + "-" + file.name;
+
+            const fs = require("fs");
+            const path = `./public/uploads/${fileName}`;
+
+            fs.writeFileSync(path, buffer);
+
+            avatarUrl = `/uploads/${fileName}`;
+        }
+
         // Check if username is taken by someone else
         if (username) {
             const existing = await prisma.user.findUnique({
