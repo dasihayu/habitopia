@@ -32,7 +32,7 @@ export default function SettingsForm({ user }: SettingsFormProps) {
     }
 
     return (
-        <form action={handleSubmit} className="glass p-8 rounded-3xl space-y-8 border-white/5">
+        <form action={handleSubmit} className="glass p-8 rounded-3xl space-y-8 border-foreground/5">
             <div className="space-y-6">
                 <div className="space-y-2">
                     <label className="text-sm font-bold text-foreground/40 uppercase tracking-widest ml-1">Username</label>
@@ -50,15 +50,14 @@ export default function SettingsForm({ user }: SettingsFormProps) {
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-sm font-bold text-foreground/40 uppercase tracking-widest ml-1">Profile Picture URL</label>
+                    <label className="text-sm font-bold text-foreground/40 uppercase tracking-widest ml-1">Profile Picture</label>
                     <div className="relative">
                         <Camera className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20" />
                         <input
-                            name="avatarUrl"
-                            type="text"
-                            defaultValue={user.avatarUrl || ""}
+                            name="avatar"
+                            type="file"
+                            accept="image/*"
                             className="w-full pl-12 pr-4 py-4 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition font-medium text-foreground"
-                            placeholder="https://example.com/image.png"
                         />
                     </div>
                     <p className="text-[10px] text-foreground/30 ml-1">Leave empty to use your default DiceBear avatar.</p>

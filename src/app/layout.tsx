@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
+import MainLayout from "@/components/layout/MainLayout";
 import { cn } from "@/lib/utils";
 
 const geistSans = Geist({
@@ -39,12 +40,16 @@ export default function RootLayout({
         >
           <TimerProvider>
             <Sidebar />
+<<<<<<< HEAD
             <main
               style={{ paddingLeft: "var(--sidebar-width)" }}
               className="pb-32 md:pb-0 min-h-screen flex flex-col transition-[padding-left] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[padding-left]"
             >
+=======
+            <MainLayout>
+>>>>>>> origin/jidan
               {children}
-            </main>
+            </MainLayout>
             <Toaster />
           </TimerProvider>
         </ThemeProvider>

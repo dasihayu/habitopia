@@ -36,12 +36,13 @@ export default function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
                 <div className="relative">
                     <motion.div
                         whileHover={{ scale: 1.05, rotate: 2 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 20 }}
                         className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-primary/30 shadow-glow cursor-pointer"
                     >
                         <img
                             src={user.avatarUrl || defaultAvatar}
                             alt={user.username}
-                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                            className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-110"
                         />
                     </motion.div>
                     <motion.div
@@ -105,8 +106,9 @@ export default function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
                     {/* Stats Grid */}
                     <div className="grid grid-cols-2 gap-4 w-full md:w-auto">
                         <motion.div
-                            whileHover={{ scale: 1.05, y: -2 }}
+                            whileHover={{ scale: 1.05, y: -4 }}
                             whileTap={{ scale: 0.95 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 17 }}
                             className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center min-w-[100px] cursor-pointer transition-colors"
                         >
                             <Zap className="w-6 h-6 text-orange-400 mb-1" />
@@ -114,8 +116,9 @@ export default function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
                             <span className="text-[10px] text-foreground/40 uppercase tracking-tighter">Streak</span>
                         </motion.div>
                         <motion.div
-                            whileHover={{ scale: 1.05, y: -2 }}
+                            whileHover={{ scale: 1.05, y: -4 }}
                             whileTap={{ scale: 0.95 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 17 }}
                             className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center min-w-[100px] cursor-pointer transition-colors"
                         >
                             <Trophy className="w-6 h-6 text-yellow-500 mb-1" />

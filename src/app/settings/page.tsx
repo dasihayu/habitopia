@@ -1,7 +1,11 @@
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
+<<<<<<< HEAD
 import { Settings, User, Camera, Shield, Save } from "lucide-react";
+=======
+import { Settings, Shield } from "lucide-react";
+>>>>>>> origin/jidan
 import SettingsForm from "@/components/settings/SettingsForm";
 
 async function getUserData() {
