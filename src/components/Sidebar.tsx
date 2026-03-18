@@ -19,11 +19,7 @@ import {
 } from "lucide-react";
 import { logout } from "@/app/actions/auth";
 import { cn } from "@/lib/utils";
-<<<<<<< HEAD
-import { motion, LayoutGroup } from "framer-motion";
-=======
 import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
->>>>>>> origin/jidan
 
 const NAV_ITEMS = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -33,15 +29,9 @@ const NAV_ITEMS = [
     { href: "/profile", label: "Profile", icon: User },
 ];
 
-<<<<<<< HEAD
 const SIDEBAR_MOTION_SPRING = { type: "spring" as const, stiffness: 300, damping: 30, mass: 0.78 };
 const LABEL_TRANSITION_BASE = { type: "spring" as const, stiffness: 420, damping: 36, mass: 0.72 };
 const MICRO_TRANSITION = { duration: 0.18, ease: [0.22, 1, 0.36, 1] as const };
-=======
-const SIDEBAR_MOTION_SPRING = { type: "spring" as const, stiffness: 280, damping: 32, mass: 1 };
-const LABEL_TRANSITION_BASE = { type: "spring" as const, stiffness: 400, damping: 35, mass: 0.8 };
-const MICRO_TRANSITION = { duration: 0.2, ease: [0.4, 0, 0.2, 1] as const };
->>>>>>> origin/jidan
 
 export default function Sidebar() {
     const pathname = usePathname();
@@ -134,7 +124,6 @@ export default function Sidebar() {
                         </motion.div>
                     </motion.div>
 
-<<<<<<< HEAD
                     <motion.div
                         initial={false}
                         aria-hidden={isCollapsed}
@@ -148,36 +137,12 @@ export default function Sidebar() {
                     >
                         <span className="font-bold text-lg tracking-tight whitespace-nowrap text-foreground">Habitopia</span>
                     </motion.div>
-=======
-                    <AnimatePresence mode="wait">
-                        {!isCollapsed && (
-                            <motion.div
-                                key="habitopia-label"
-                                initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
-                                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                                exit={{ opacity: 0, x: -10, filter: "blur(4px)", transition: { duration: 0.15 } }}
-                                transition={getLabelTransition(0)}
-                                className="flex items-center overflow-hidden flex-1 ml-3"
-                            >
-                                <span className="font-bold text-lg tracking-tight whitespace-nowrap text-foreground">Habitopia</span>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
->>>>>>> origin/jidan
 
                     <motion.button
                         onClick={() => setIsCollapsed(false)}
                         aria-hidden={!isCollapsed}
                         animate={{
                             opacity: isCollapsed ? 1 : 0,
-<<<<<<< HEAD
-                            scale: isCollapsed ? 1 : 0.8,
-                        }}
-                        transition={MICRO_TRANSITION}
-                        className={cn(
-                            "absolute top-1/2 -translate-y-1/2 right-1.5 h-4 w-4 flex items-center justify-center hover:bg-foreground/5 rounded text-muted-foreground hover:text-foreground active:scale-95",
-                            !isCollapsed && "pointer-events-none"
-=======
                             scale: isCollapsed ? 1 : 0.9,
                             x: isCollapsed ? 0 : -4,
                         }}
@@ -185,7 +150,6 @@ export default function Sidebar() {
                         className={cn(
                             "absolute top-1/2 -translate-y-1/2 h-4 w-4 flex items-center justify-center hover:bg-foreground/5 rounded text-muted-foreground hover:text-foreground active:scale-95",
                             isCollapsed ? "right-1.5" : "pointer-events-none"
->>>>>>> origin/jidan
                         )}
                     >
                         <ChevronRight className="w-3 h-3" />
@@ -196,12 +160,8 @@ export default function Sidebar() {
                         aria-hidden={isCollapsed}
                         animate={{
                             opacity: isCollapsed ? 0 : 1,
-<<<<<<< HEAD
-                            scale: isCollapsed ? 0.8 : 1,
-=======
                             scale: isCollapsed ? 0.9 : 1,
                             x: isCollapsed ? -6 : 0,
->>>>>>> origin/jidan
                         }}
                         transition={MICRO_TRANSITION}
                         className={cn(
@@ -242,7 +202,6 @@ export default function Sidebar() {
                                         <Icon className={cn("w-6 h-6 transition-transform group-hover:scale-110", isActive && "text-primary")} />
                                     </div>
 
-<<<<<<< HEAD
                                     <motion.span
                                         initial={false}
                                         aria-hidden={isCollapsed}
@@ -255,20 +214,6 @@ export default function Sidebar() {
                                         className={cn(
                                             "whitespace-nowrap relative z-10 overflow-hidden text-sm",
                                             isCollapsed && "pointer-events-none"
-=======
-                                    <AnimatePresence mode="wait">
-                                        {!isCollapsed && (
-                                            <motion.span
-                                                key={`label-${href}`}
-                                                initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
-                                                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                                                exit={{ opacity: 0, x: -10, filter: "blur(4px)", transition: { duration: 0.15 } }}
-                                                transition={getLabelTransition(index)}
-                                                className="whitespace-nowrap relative z-10 overflow-hidden text-sm"
-                                            >
-                                                {label}
-                                            </motion.span>
->>>>>>> origin/jidan
                                         )}
                                     >
                                         {label}
@@ -284,10 +229,8 @@ export default function Sidebar() {
                     {/* Theme Toggle */}
                     <button
                         onClick={(e) => {
-                            const isDark = theme === "dark";
-                            const newTheme = isDark ? "light" : "dark";
-
-                            // Get button center for the ripple origin
+                            const newTheme = theme === "dark" ? "light" : "dark";
+                            // Get button center for the circle origin
                             const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
                             const x = Math.round(rect.left + rect.width / 2);
                             const y = Math.round(rect.top + rect.height / 2);
@@ -298,14 +241,7 @@ export default function Sidebar() {
                                 setTheme(newTheme);
                                 return;
                             }
-
-                            // CRITICAL: toggle class synchronously inside callback so VT
-                            // API captures the real before → after DOM change.
-                            // setTheme() is called after to keep next-themes in sync.
-                            const transition = document.startViewTransition(() => {
-                                document.documentElement.classList.toggle("dark", !isDark);
-                            });
-                            transition.ready.then(() => setTheme(newTheme));
+                            document.startViewTransition(() => setTheme(newTheme));
                         }}
                         className="flex items-center h-12 rounded-xl w-full text-muted-foreground hover:text-foreground hover:bg-foreground/5 relative overflow-hidden group cursor-pointer transition-colors duration-200"
                     >
@@ -315,7 +251,6 @@ export default function Sidebar() {
                                 <Moon className="w-6 h-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 absolute" />
                             </div>
                         </div>
-<<<<<<< HEAD
                         <motion.span
                             initial={false}
                             aria-hidden={isCollapsed}
@@ -329,22 +264,6 @@ export default function Sidebar() {
                         >
                             Toggle Theme
                         </motion.span>
-=======
-                        <AnimatePresence mode="wait">
-                            {!isCollapsed && (
-                                <motion.span
-                                    key="theme-label"
-                                    initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
-                                    animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                                    exit={{ opacity: 0, x: -10, filter: "blur(4px)", transition: { duration: 0.15 } }}
-                                    transition={getLabelTransition(NAV_ITEMS.length)}
-                                    className="whitespace-nowrap overflow-hidden text-sm"
-                                >
-                                    Toggle Theme
-                                </motion.span>
-                            )}
-                        </AnimatePresence>
->>>>>>> origin/jidan
                     </button>
 
                     {/* Settings */}
@@ -355,7 +274,6 @@ export default function Sidebar() {
                         <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
                             <Settings className="w-6 h-6 transition-transform group-hover:scale-110" />
                         </div>
-<<<<<<< HEAD
                         <motion.span
                             initial={false}
                             aria-hidden={isCollapsed}
@@ -369,22 +287,6 @@ export default function Sidebar() {
                         >
                             Settings
                         </motion.span>
-=======
-                        <AnimatePresence mode="wait">
-                            {!isCollapsed && (
-                                <motion.span
-                                    key="settings-label"
-                                    initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
-                                    animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                                    exit={{ opacity: 0, x: -10, filter: "blur(4px)", transition: { duration: 0.15 } }}
-                                    transition={getLabelTransition(NAV_ITEMS.length + 1)}
-                                    className="whitespace-nowrap overflow-hidden text-sm"
-                                >
-                                    Settings
-                                </motion.span>
-                            )}
-                        </AnimatePresence>
->>>>>>> origin/jidan
                     </Link>
 
                     {/* Logout */}
@@ -395,7 +297,6 @@ export default function Sidebar() {
                             <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
                                 <LogOut className="w-6 h-6 transition-transform group-hover:scale-110" />
                             </div>
-<<<<<<< HEAD
                             <motion.span
                                 initial={false}
                                 aria-hidden={isCollapsed}
@@ -409,22 +310,6 @@ export default function Sidebar() {
                             >
                                 Logout
                             </motion.span>
-=======
-                             <AnimatePresence mode="wait">
-                                {!isCollapsed && (
-                                    <motion.span
-                                        key="logout-label"
-                                        initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
-                                        animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                                        exit={{ opacity: 0, x: -10, filter: "blur(4px)", transition: { duration: 0.15 } }}
-                                        transition={getLabelTransition(NAV_ITEMS.length + 2)}
-                                        className="whitespace-nowrap overflow-hidden text-sm font-medium"
-                                    >
-                                        Logout
-                                    </motion.span>
-                                )}
-                            </AnimatePresence>
->>>>>>> origin/jidan
                         </button>
                     </form>
                 </div>
