@@ -130,7 +130,7 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                                     <motion.div
                                         whileHover={{ scale: 1.1, rotate: 5 }}
                                         key={ua.id}
-                                        className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 hover:border-primary/50 transition-colors cursor-help hover:shadow-glow"
+                                        className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-xl flex items-center justify-center border border-black/10 dark:border-white/10 hover:border-primary/50 transition-colors cursor-help hover:shadow-glow"
                                         title={ua.achievement.name}
                                     >
                                         <Trophy className="w-6 h-6 text-primary" />
@@ -142,7 +142,7 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                                     <motion.div
                                         whileHover={{ scale: 1.1, rotate: 5 }}
                                         key={`demo-badge-${i}`}
-                                        className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 hover:border-primary/50 transition-colors cursor-help hover:shadow-glow relative group"
+                                        className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-xl flex items-center justify-center border border-black/10 dark:border-white/10 hover:border-primary/50 transition-colors cursor-help hover:shadow-glow relative group"
                                     >
                                         <Trophy className="w-6 h-6 text-primary/70 group-hover:text-primary transition-colors" />
                                     </motion.div>
@@ -172,9 +172,9 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                                         whileHover={{ scale: 1.02, x: 5 }}
                                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
                                         key={item.id}
-                                        className="flex items-center gap-6 p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/5 hover:border-white/10 transition-colors group cursor-default"
+                                        className="flex items-center gap-6 p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 hover:bg-black/5 dark:hover:bg-white/5 hover:border-black/10 dark:hover:border-white/10 transition-colors group cursor-default"
                                     >
-                                        <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-foreground/40 group-hover:text-primary transition-colors">
+                                        <div className="w-10 h-10 bg-black/5 dark:bg-white/5 rounded-lg flex items-center justify-center text-foreground/40 group-hover:text-primary transition-colors">
                                             <Shield className="w-5 h-5" />
                                         </div>
                                         <div className="flex-1">

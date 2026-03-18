@@ -78,7 +78,7 @@ export default function OnboardingPage() {
         <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background">
             <div className="w-full max-w-2xl relative">
                 {/* Progress Bar */}
-                <div className="absolute -top-12 left-0 w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                <div className="absolute -top-12 left-0 w-full h-1 bg-black/10 dark:bg-white/5 rounded-full overflow-hidden">
                     <motion.div
                         className="h-full bg-primary shadow-glow"
                         initial={{ width: "33%" }}
@@ -105,7 +105,7 @@ export default function OnboardingPage() {
                                         onClick={() => toggleInterest(id)}
                                         className={`flex flex-col items-center justify-center p-6 rounded-2xl border transition-all ${selectedInterests.includes(id)
                                                 ? "bg-primary/20 border-primary shadow-glow"
-                                                : "bg-white/5 border-white/10 hover:bg-white/10"
+                                                : "bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10"
                                             }`}
                                     >
                                         <Icon className={`w-8 h-8 mb-3 ${selectedInterests.includes(id) ? "text-primary" : "text-foreground/60"}`} />
@@ -144,7 +144,7 @@ export default function OnboardingPage() {
                                         onClick={() => setIntensity(id)}
                                         className={`w-full text-left p-6 rounded-2xl border transition-all ${intensity === id
                                                 ? "bg-primary/20 border-primary shadow-glow"
-                                                : "bg-white/5 border-white/10 hover:bg-white/10"
+                                                : "bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10"
                                             }`}
                                     >
                                         <div className="flex justify-between items-center mb-1">
@@ -181,7 +181,7 @@ export default function OnboardingPage() {
                                         onClick={() => toggleHour(id)}
                                         className={`w-full text-left p-6 rounded-2xl border transition-all ${activeHours.includes(id)
                                                 ? "bg-primary/20 border-primary shadow-glow"
-                                                : "bg-white/5 border-white/10 hover:bg-white/10"
+                                                : "bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10"
                                             }`}
                                     >
                                         <div className="flex justify-between items-center mb-1">

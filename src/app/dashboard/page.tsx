@@ -81,7 +81,7 @@ export default async function DashboardPage() {
                                         key={quest.id}
                                         className="glass p-6 rounded-2xl flex items-center gap-6 group hover:bg-white/[0.07] hover:scale-[1.02] hover:-translate-y-1 hover:shadow-glow transition-all duration-300 cursor-pointer border-white/5"
                                     >
-                                        <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                        <div className="w-14 h-14 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                                             <Timer className="text-foreground/40 group-hover:text-primary w-7 h-7" />
                                         </div>
                                         <div className="flex-1 min-w-0">

@@ -47,7 +47,7 @@ export default function RegisterPage() {
                             name="username"
                             type="text"
                             required
-                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
+                            className="w-full px-4 py-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
                             placeholder="HabitHero"
                         />
                     </div>
@@ -58,7 +58,7 @@ export default function RegisterPage() {
                             name="password"
                             type="password"
                             required
-                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
+                            className="w-full px-4 py-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
                             placeholder="••••••••"
                         />
                     </div>

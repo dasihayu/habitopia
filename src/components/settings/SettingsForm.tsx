@@ -42,7 +42,7 @@ export default function SettingsForm({ user }: SettingsFormProps) {
                             name="username"
                             type="text"
                             defaultValue={user.username}
-                            className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition font-medium text-foreground"
+                            className="w-full pl-12 pr-4 py-4 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition font-medium text-foreground"
                             placeholder="HabitHero"
                             required
                         />
@@ -57,7 +57,7 @@ export default function SettingsForm({ user }: SettingsFormProps) {
                             name="avatarUrl"
                             type="text"
                             defaultValue={user.avatarUrl || ""}
-                            className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition font-medium text-foreground"
+                            className="w-full pl-12 pr-4 py-4 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition font-medium text-foreground"
                             placeholder="https://example.com/image.png"
                         />
                     </div>

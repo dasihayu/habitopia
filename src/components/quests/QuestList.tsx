@@ -66,13 +66,13 @@ export default function QuestList({ initialQuests }: QuestListProps) {
                                 quest.difficulty === 'MEDIUM' ? 'bg-orange-500' : 'bg-green-500'
                                 } opacity-50`} />
 
-                            <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center shrink-0">
+                            <div className="w-16 h-16 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center shrink-0">
                                 <Target className="w-8 h-8 text-primary/60 group-hover:text-primary transition-colors" />
                             </div>
 
                             <div className="flex-1 min-w-0 text-center md:text-left space-y-1">
                                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-1">
-                                    <span className="text-[10px] bg-white/5 px-2.5 py-1 rounded-full text-foreground/40 font-bold uppercase tracking-wider">
+                                    <span className="text-[10px] bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-full text-foreground/40 font-bold uppercase tracking-wider">
                                         {quest.category}
                                     </span>
                                     <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider ${quest.difficulty === 'HARD' ? 'text-red-400 bg-red-400/10' :

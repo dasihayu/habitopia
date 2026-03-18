@@ -45,7 +45,7 @@ export default function CreateQuestModal() {
                             name="title"
                             required
                             placeholder="e.g. Read 10 pages"
-                            className="w-full bg-black/5 border border-white/10 rounded-xl p-4 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:scale-[1.01]"
+                            className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-4 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:scale-[1.01]"
                         />
                     </div>
 
@@ -55,7 +55,7 @@ export default function CreateQuestModal() {
                             name="description"
                             required
                             placeholder="Describe your goal..."
-                            className="w-full bg-black/5 border border-white/10 rounded-xl p-4 min-h-[100px] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:scale-[1.01]"
+                            className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-4 min-h-[100px] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:scale-[1.01]"
                         />
                     </div>
 
@@ -65,7 +65,7 @@ export default function CreateQuestModal() {
                             {['EASY', 'MEDIUM', 'HARD'].map((level) => (
                                 <motion.label whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} key={level} className="cursor-pointer">
                                     <input type="radio" name="difficulty" value={level} className="peer sr-only" required defaultChecked={level === 'EASY'} />
-                                    <div className="p-3 rounded-xl border border-white/10 text-center text-sm font-bold peer-checked:bg-primary/20 peer-checked:border-primary peer-checked:text-primary transition-all hover:bg-white/5">
+                                    <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 text-center text-sm font-bold peer-checked:bg-primary/20 peer-checked:border-primary peer-checked:text-primary transition-all hover:bg-black/5 dark:hover:bg-white/5">
                                         {level}
                                     </div>
                                 </motion.label>
