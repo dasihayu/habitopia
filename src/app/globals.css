@@ -200,4 +200,48 @@ body {
     transparent
   );
   animation: shimmer 2s infinite;
-}
+}
+
+/* =============================================
+   View Transitions – Theme Toggle Animation
+   ============================================= */
+
+/* Disable default cross-fade */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Old view: fade out quickly */
+::view-transition-old(root) {
+  animation: vt-fade-out 0.25s ease forwards;
+}
+
+/* New view: circular wipe expanding from sidebar toggle button */
+::view-transition-new(root) {
+  animation: vt-reveal 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes vt-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes vt-reveal {
+  from {
+    clip-path: circle(0% at var(--vt-x, 24px) var(--vt-y, 50%));
+  }
+  to {
+    clip-path: circle(150% at var(--vt-x, 24px) var(--vt-y, 50%));
+  }
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
+  }
+}
+

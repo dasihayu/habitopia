@@ -228,7 +228,21 @@ export default function Sidebar() {
                 <div className="px-3 py-4 border-t border-border/50 space-y-2 shrink-0">
                     {/* Theme Toggle */}
                     <button
-                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                        onClick={(e) => {
+                            const newTheme = theme === "dark" ? "light" : "dark";
+                            // Get button center for the circle origin
+                            const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
+                            const x = Math.round(rect.left + rect.width / 2);
+                            const y = Math.round(rect.top + rect.height / 2);
+                            document.documentElement.style.setProperty("--vt-x", `${x}px`);
+                            document.documentElement.style.setProperty("--vt-y", `${y}px`);
+
+                            if (!document.startViewTransition) {
+                                setTheme(newTheme);
+                                return;
+                            }
+                            document.startViewTransition(() => setTheme(newTheme));
+                        }}
                         className="flex items-center h-12 rounded-xl w-full text-muted-foreground hover:text-foreground hover:bg-foreground/5 relative overflow-hidden group cursor-pointer transition-colors duration-200"
                     >
                         <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
