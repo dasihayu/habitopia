@@ -42,7 +42,7 @@ export default function RootLayout({
             <Sidebar />
             <main
               style={{ paddingLeft: "var(--sidebar-width)" }}
-              className="pb-32 md:pb-0 min-h-screen transition-all duration-200 ease-out flex flex-col"
+              className="pb-32 md:pb-0 min-h-screen flex flex-col transition-[padding-left] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[padding-left]"
             >
               {children}
             </main>

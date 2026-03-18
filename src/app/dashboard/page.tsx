@@ -8,9 +8,16 @@ import { generateDailyQuests } from "@/lib/quest-engine";
 import DashboardAnimations from "@/components/dashboard/DashboardAnimations"; // [NEW] Wrapper
 
 async function getDashboardData() {
-    // ... remaining logic 
     const session = await getSession();
     if (!session) redirect("/login");
+
+    const user = await prisma.user.findUnique({
+        where: { id: session.userId },
+        include: { quests: { where: { isCompleted: false }, orderBy: { createdAt: "desc" } } },
+    });
+
+    if (!user) redirect("/login");
+    if (!user.isOnboarded) redirect("/onboarding");
 
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
@@ -21,24 +28,19 @@ async function getDashboardData() {
     });
 
     if (existingQuests.length > 0) {
-        const user = await prisma.user.findUnique({
-            where: { id: session.userId },
-            include: { quests: { where: { createdAt: { gte: startOfDay } } } }
-        });
-        return { user: user!, quests: existingQuests.filter((q: any) => !q.isCompleted) };
+        return { user, quests: existingQuests.filter((quest) => !quest.isCompleted) };
     }
 
     await generateDailyQuests(session.userId);
 
-    const user = await prisma.user.findUnique({
+    const refreshedUser = await prisma.user.findUnique({
         where: { id: session.userId },
         include: { quests: { where: { isCompleted: false }, orderBy: { createdAt: "desc" } } },
     });
 
-    if (!user) redirect("/login");
-    if (!user.isOnboarded) redirect("/onboarding");
+    if (!refreshedUser) redirect("/login");
 
-    return { user, quests: user.quests };
+    return { user: refreshedUser, quests: refreshedUser.quests };
 }
 
 export default async function DashboardPage() {
@@ -74,7 +76,7 @@ export default async function DashboardPage() {
                                     <button className="mt-4 text-primary font-bold text-sm">Generate Bonus Quests</button>
                                 </div>
                             ) : (
-                                quests.slice(0, 3).map((quest: any) => (
+                                quests.slice(0, 3).map((quest) => (
                                     <div
                                         key={quest.id}
                                         className="glass p-6 rounded-2xl flex items-center gap-6 group hover:bg-white/[0.07] hover:scale-[1.02] hover:-translate-y-1 hover:shadow-glow transition-all duration-300 cursor-pointer border-white/5"

@@ -1,13 +1,35 @@
 "use server";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
-import { createSession, deleteSession } from "@/lib/auth";
+import { createSession, deleteSession, getSession } from "@/lib/auth";
+import { generateDailyQuests } from "@/lib/quest-engine";
+import { Intensity } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
+const VALID_INTENSITIES = new Set<Intensity>(["CASUAL", "BALANCED", "HARDCORE"]);
+const VALID_ACTIVE_HOURS = new Set(["morning", "afternoon", "night"]);
+const VALID_INTERESTS = new Set([
+    "study",
+    "fitness",
+    "reading",
+    "coding",
+    "health",
+    "productivity",
+]);
+
+function parseListField(value: FormDataEntryValue | null) {
+    if (typeof value !== "string") return [];
+
+    return value
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+}
+
 export async function register(formData: FormData) {
-    const username = formData.get("username") as string;
-    const password = formData.get("password") as string;
+    const username = formData.get("username")?.toString().trim() ?? "";
+    const password = formData.get("password")?.toString() ?? "";
 
     if (!username || !password) {
         return { error: "Username and password are required" };
@@ -28,6 +50,10 @@ export async function register(formData: FormData) {
             data: {
                 username,
                 passwordHash,
+                interests: [],
+                activeHours: [],
+                intensity: "BALANCED",
+                isOnboarded: false,
             },
         });
 
@@ -41,8 +67,8 @@ export async function register(formData: FormData) {
 }
 
 export async function login(formData: FormData) {
-    const username = formData.get("username") as string;
-    const password = formData.get("password") as string;
+    const username = formData.get("username")?.toString().trim() ?? "";
+    const password = formData.get("password")?.toString() ?? "";
 
     if (!username || !password) {
         return { error: "Username and password are required" };
@@ -77,23 +103,32 @@ export async function logout() {
     redirect("/login");
 }
 
-import { getSession } from "@/lib/auth";
-import { generateDailyQuests } from "@/lib/quest-engine";
-
 export async function completeOnboarding(formData: FormData) {
     const session = await getSession();
     if (!session) redirect("/login");
 
-    const interests = formData.get("interests")?.toString().split(",") || [];
-    const intensity = formData.get("intensity") as string;
-    const activeHours = formData.get("activeHours")?.toString().split(",") || [];
+    const interests = parseListField(formData.get("interests")).filter((interest) => VALID_INTERESTS.has(interest));
+    const intensity = formData.get("intensity")?.toString() ?? "";
+    const activeHours = parseListField(formData.get("activeHours")).filter((hour) => VALID_ACTIVE_HOURS.has(hour));
+
+    if (interests.length === 0) {
+        return { error: "Select at least one supported interest" };
+    }
+
+    if (!VALID_INTENSITIES.has(intensity as Intensity)) {
+        return { error: "Invalid intensity" };
+    }
+
+    if (activeHours.length === 0) {
+        return { error: "Select at least one active hour" };
+    }
 
     try {
         await prisma.user.update({
             where: { id: session.userId },
             data: {
                 interests,
-                intensity: intensity as any, // Cast to enum
+                intensity: intensity as Intensity,
                 activeHours,
                 isOnboarded: true,
             },

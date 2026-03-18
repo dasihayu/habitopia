@@ -16,11 +16,10 @@ import {
     ChevronRight,
     Sun,
     Moon,
-    Plus,
 } from "lucide-react";
 import { logout } from "@/app/actions/auth";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { motion, LayoutGroup } from "framer-motion";
 
 const NAV_ITEMS = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -29,6 +28,10 @@ const NAV_ITEMS = [
     { href: "/achievements", label: "Achievements", icon: Trophy },
     { href: "/profile", label: "Profile", icon: User },
 ];
+
+const SIDEBAR_MOTION_SPRING = { type: "spring" as const, stiffness: 300, damping: 30, mass: 0.78 };
+const LABEL_TRANSITION_BASE = { type: "spring" as const, stiffness: 420, damping: 36, mass: 0.72 };
+const MICRO_TRANSITION = { duration: 0.18, ease: [0.22, 1, 0.36, 1] as const };
 
 export default function Sidebar() {
     const pathname = usePathname();
@@ -52,11 +55,16 @@ export default function Sidebar() {
     // Don't show sidebar on auth/onboarding/landing pages
     const isAuthPage = ["/", "/login", "/register", "/onboarding"].includes(pathname);
 
-    // Sync CSS variable for main layout padding
+    const getLabelTransition = (_order: number) => ({
+        ...LABEL_TRANSITION_BASE,
+        delay: 0,
+    });
+
+    // Sync layout offset with sidebar state (animate in CSS on main container).
     useEffect(() => {
-        const targetWidth = (isMobile || isAuthPage) ? '0px' : (isCollapsed ? '80px' : '256px');
-        document.documentElement.style.setProperty('--sidebar-width', targetWidth);
-    }, [isCollapsed, isMobile, isAuthPage]); // Dependency on isAuthPage (stable bool) instead of pathname
+        const targetWidth = (isMobile || isAuthPage) ? "0px" : (isCollapsed ? "80px" : "256px");
+        document.documentElement.style.setProperty("--sidebar-width", targetWidth);
+    }, [isCollapsed, isMobile, isAuthPage]);
 
     if (isAuthPage) return null;
 
@@ -95,51 +103,80 @@ export default function Sidebar() {
             <motion.aside
                 initial={false}
                 animate={{ width: isCollapsed ? 80 : 256 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
                 className={cn(
                     "fixed top-0 left-0 h-screen hidden md:flex flex-col z-50 border-r border-border bg-background/50 backdrop-blur-xl"
                 )}
+                style={{ willChange: "width", contain: "layout paint style" }}
+                transition={SIDEBAR_MOTION_SPRING}
             >
                 {/* Header / Toggle */}
-                <div className={cn(
-                    "flex border-b border-border/50 relative overflow-hidden shrink-0 transition-all duration-200",
-                    isCollapsed ? "flex-col items-center justify-center h-28 gap-4 py-4" : "flex-row items-center h-20 px-4"
-                )}>
-                    <motion.div layout className="flex items-center justify-center shrink-0">
-                        <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow shrink-0 relative z-10">
+                <motion.div
+                    className={cn(
+                        "flex items-center h-20 border-b border-border/50 shrink-0 relative",
+                        isCollapsed ? "px-3" : "px-4"
+                    )}
+                >
+                    <motion.div className="w-14 flex items-center justify-center shrink-0">
+                        <motion.div
+                            className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow"
+                        >
                             H
-                        </div>
+                        </motion.div>
                     </motion.div>
 
-                    <AnimatePresence mode="popLayout" initial={false}>
-                        {!isCollapsed && (
-                            <motion.div
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -10 }}
-                                transition={{ duration: 0.2 }}
-                                className="flex items-center gap-3 overflow-hidden flex-1 ml-3"
-                            >
-                                <span className="font-bold text-lg tracking-tight whitespace-nowrap text-foreground">Habitopia</span>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    <motion.div
+                        initial={false}
+                        aria-hidden={isCollapsed}
+                        animate={{
+                            opacity: isCollapsed ? 0 : 1,
+                            x: isCollapsed ? -8 : 0,
+                            scale: isCollapsed ? 0.98 : 1,
+                        }}
+                        transition={getLabelTransition(0)}
+                        className={cn("flex items-center overflow-hidden flex-1 ml-3", isCollapsed && "pointer-events-none")}
+                    >
+                        <span className="font-bold text-lg tracking-tight whitespace-nowrap text-foreground">Habitopia</span>
+                    </motion.div>
 
-                    <button
-                        onClick={() => setIsCollapsed(!isCollapsed)}
+                    <motion.button
+                        onClick={() => setIsCollapsed(false)}
+                        aria-hidden={!isCollapsed}
+                        animate={{
+                            opacity: isCollapsed ? 1 : 0,
+                            scale: isCollapsed ? 1 : 0.9,
+                            x: isCollapsed ? 0 : -4,
+                        }}
+                        transition={MICRO_TRANSITION}
                         className={cn(
-                            "p-2 hover:bg-foreground/5 rounded-lg text-muted-foreground transition-all duration-200 ease-out hover:text-foreground active:scale-95 shrink-0 z-10",
-                            isCollapsed ? "" : "ml-auto"
+                            "absolute top-1/2 -translate-y-1/2 h-4 w-4 flex items-center justify-center hover:bg-foreground/5 rounded text-muted-foreground hover:text-foreground active:scale-95",
+                            isCollapsed ? "right-1.5" : "pointer-events-none"
                         )}
                     >
-                        <ChevronLeft className={cn("w-5 h-5 transition-transform duration-300", isCollapsed && "rotate-180")} />
-                    </button>
-                </div>
+                        <ChevronRight className="w-3 h-3" />
+                    </motion.button>
+
+                    <motion.button
+                        onClick={() => setIsCollapsed(true)}
+                        aria-hidden={isCollapsed}
+                        animate={{
+                            opacity: isCollapsed ? 0 : 1,
+                            scale: isCollapsed ? 0.9 : 1,
+                            x: isCollapsed ? -6 : 0,
+                        }}
+                        transition={MICRO_TRANSITION}
+                        className={cn(
+                            "p-2 hover:bg-foreground/5 rounded-lg text-muted-foreground hover:text-foreground active:scale-95 shrink-0 ml-auto",
+                            isCollapsed && "pointer-events-none"
+                        )}
+                    >
+                        <ChevronLeft className="w-5 h-5" />
+                    </motion.button>
+                </motion.div>
 
                 {/* Navigation */}
                 <LayoutGroup>
                     <div className="flex-1 py-6 px-3 space-y-2 overflow-y-auto">
-                        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+                        {NAV_ITEMS.map(({ href, label, icon: Icon }, index) => {
                             const isActive = pathname === href;
                             return (
                                 <Link
@@ -156,7 +193,7 @@ export default function Sidebar() {
                                         <motion.div
                                             layoutId="activeTab"
                                             className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-xl pointer-events-none"
-                                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                            transition={SIDEBAR_MOTION_SPRING}
                                         />
                                     )}
 
@@ -165,20 +202,22 @@ export default function Sidebar() {
                                         <Icon className={cn("w-6 h-6 transition-transform group-hover:scale-110", isActive && "text-primary")} />
                                     </div>
 
-                                    <AnimatePresence mode="popLayout" initial={false}>
-                                        {!isCollapsed && (
-                                            <motion.span
-                                                layout
-                                                initial={{ opacity: 0, x: -10 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -10 }}
-                                                transition={{ duration: 0.2 }}
-                                                className="whitespace-nowrap relative z-10 overflow-hidden text-sm"
-                                            >
-                                                {label}
-                                            </motion.span>
+                                    <motion.span
+                                        initial={false}
+                                        aria-hidden={isCollapsed}
+                                        animate={{
+                                            opacity: isCollapsed ? 0 : 1,
+                                            x: isCollapsed ? -8 : 0,
+                                            scale: isCollapsed ? 0.985 : 1,
+                                        }}
+                                        transition={getLabelTransition(index)}
+                                        className={cn(
+                                            "whitespace-nowrap relative z-10 overflow-hidden text-sm",
+                                            isCollapsed && "pointer-events-none"
                                         )}
-                                    </AnimatePresence>
+                                    >
+                                        {label}
+                                    </motion.span>
                                 </Link>
                             );
                         })}
@@ -186,7 +225,7 @@ export default function Sidebar() {
                 </LayoutGroup>
 
                 {/* Footer Actions */}
-                <div className="p-4 border-t border-border/50 space-y-2 shrink-0">
+                <div className="px-3 py-4 border-t border-border/50 space-y-2 shrink-0">
                     {/* Theme Toggle */}
                     <button
                         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -198,19 +237,19 @@ export default function Sidebar() {
                                 <Moon className="w-6 h-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 absolute" />
                             </div>
                         </div>
-                        <AnimatePresence mode="popLayout" initial={false}>
-                            {!isCollapsed && (
-                                <motion.span
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -10 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="whitespace-nowrap overflow-hidden text-sm"
-                                >
-                                    Toggle Theme
-                                </motion.span>
-                            )}
-                        </AnimatePresence>
+                        <motion.span
+                            initial={false}
+                            aria-hidden={isCollapsed}
+                            animate={{
+                                opacity: isCollapsed ? 0 : 1,
+                                x: isCollapsed ? -8 : 0,
+                                scale: isCollapsed ? 0.985 : 1,
+                            }}
+                            transition={getLabelTransition(NAV_ITEMS.length)}
+                            className={cn("whitespace-nowrap overflow-hidden text-sm", isCollapsed && "pointer-events-none")}
+                        >
+                            Toggle Theme
+                        </motion.span>
                     </button>
 
                     {/* Settings */}
@@ -221,19 +260,19 @@ export default function Sidebar() {
                         <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
                             <Settings className="w-6 h-6 transition-transform group-hover:scale-110" />
                         </div>
-                        <AnimatePresence mode="popLayout" initial={false}>
-                            {!isCollapsed && (
-                                <motion.span
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -10 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="whitespace-nowrap overflow-hidden text-sm"
-                                >
-                                    Settings
-                                </motion.span>
-                            )}
-                        </AnimatePresence>
+                        <motion.span
+                            initial={false}
+                            aria-hidden={isCollapsed}
+                            animate={{
+                                opacity: isCollapsed ? 0 : 1,
+                                x: isCollapsed ? -8 : 0,
+                                scale: isCollapsed ? 0.985 : 1,
+                            }}
+                            transition={getLabelTransition(NAV_ITEMS.length + 1)}
+                            className={cn("whitespace-nowrap overflow-hidden text-sm", isCollapsed && "pointer-events-none")}
+                        >
+                            Settings
+                        </motion.span>
                     </Link>
 
                     {/* Logout */}
@@ -244,19 +283,19 @@ export default function Sidebar() {
                             <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
                                 <LogOut className="w-6 h-6 transition-transform group-hover:scale-110" />
                             </div>
-                            <AnimatePresence mode="popLayout" initial={false}>
-                                {!isCollapsed && (
-                                    <motion.span
-                                        initial={{ opacity: 0, x: -10 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: -10 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="whitespace-nowrap overflow-hidden text-sm font-medium"
-                                    >
-                                        Logout
-                                    </motion.span>
-                                )}
-                            </AnimatePresence>
+                            <motion.span
+                                initial={false}
+                                aria-hidden={isCollapsed}
+                                animate={{
+                                    opacity: isCollapsed ? 0 : 1,
+                                    x: isCollapsed ? -8 : 0,
+                                    scale: isCollapsed ? 0.985 : 1,
+                                }}
+                                transition={getLabelTransition(NAV_ITEMS.length + 2)}
+                                className={cn("whitespace-nowrap overflow-hidden text-sm font-medium", isCollapsed && "pointer-events-none")}
+                            >
+                                Logout
+                            </motion.span>
                         </button>
                     </form>
                 </div>

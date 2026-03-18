@@ -71,13 +71,26 @@ export default function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
                             </span>
                             <span>{user.xp} / {xpNeeded} XP</span>
                         </div>
-                        <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden border border-white/10">
+                        <div className="h-3 w-full bg-black/10 dark:bg-white/5 rounded-full overflow-hidden border border-black/10 dark:border-white/10">
                             <motion.div
-                                className="h-full bg-gradient-to-r from-primary to-accent shadow-glow"
+                                className="h-full bg-gradient-to-r from-primary to-accent relative overflow-hidden rounded-r-full"
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
-                                transition={{ duration: 1, ease: "easeOut" }}
-                            />
+                                transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                            >
+                                {/* Premium Shine Effect */}
+                                <motion.div
+                                    animate={{ x: ["-100%", "250%"] }}
+                                    transition={{ 
+                                        duration: 2.5, 
+                                        repeat: Infinity, 
+                                        ease: "linear",
+                                        repeatDelay: 1.5
+                                    }}
+                                    className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                                    style={{ transform: "skewX(-20deg)" }}
+                                />
+                            </motion.div>
                         </div>
                     </div>
                 </div>
@@ -94,7 +107,7 @@ export default function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
                         <motion.div
                             whileHover={{ scale: 1.05, y: -2 }}
                             whileTap={{ scale: 0.95 }}
-                            className="glass bg-white/5 p-4 rounded-2xl flex flex-col items-center justify-center border-white/5 min-w-[100px] cursor-pointer"
+                            className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center min-w-[100px] cursor-pointer transition-colors"
                         >
                             <Zap className="w-6 h-6 text-orange-400 mb-1" />
                             <span className="text-xl font-bold">{user.streak}</span>
@@ -103,7 +116,7 @@ export default function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
                         <motion.div
                             whileHover={{ scale: 1.05, y: -2 }}
                             whileTap={{ scale: 0.95 }}
-                            className="glass bg-white/5 p-4 rounded-2xl flex flex-col items-center justify-center border-white/5 min-w-[100px] cursor-pointer"
+                            className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center min-w-[100px] cursor-pointer transition-colors"
                         >
                             <Trophy className="w-6 h-6 text-yellow-500 mb-1" />
                             <span className="text-xl font-bold">12</span>
