@@ -118,6 +118,14 @@ body {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--card-border);
   box-shadow: var(--shadow-glass);
+  contain: layout style;
+}
+
+@media (max-width: 768px) {
+  .glass {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
 }
 
 .glass-premium {
@@ -284,6 +292,26 @@ body {
   to {
     clip-path: circle(175% at var(--vt-x, 24px) var(--vt-y, 50%));
     opacity: 1;
+  }
+}
+
+/* Mobile: smooth fade + subtle scale — much lighter than clip-path */
+@media (max-width: 768px) {
+  ::view-transition-old(root) {
+    animation: vt-mobile-out 0.2s cubic-bezier(0.4, 0, 1, 1) forwards;
+    z-index: 1;
+  }
+  ::view-transition-new(root) {
+    animation: vt-mobile-in 0.45s cubic-bezier(0, 0, 0.2, 1) forwards;
+    z-index: 2;
+  }
+  @keyframes vt-mobile-out {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(0.97); }
+  }
+  @keyframes vt-mobile-in {
+    from { opacity: 0; transform: scale(0.97); }
+    to   { opacity: 1; transform: scale(1); }
   }
 }
 

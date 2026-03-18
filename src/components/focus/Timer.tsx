@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, RotateCcw, CheckCircle, Volume2, VolumeX, Moon } from "lucide-react";
 import { completeQuest } from "@/app/actions/quests";
@@ -11,7 +11,20 @@ interface TimerProps {
     questId?: string | null;
 }
 
-const Digit = ({ value }: { value: string }) => {
+// Circumference is constant for r=120, computed once at module load
+const CIRCLE_RADIUS = 120;
+const CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
+
+// Digit spring transition — constant prevents re-creation on each render
+const DIGIT_TRANSITION = {
+    type: "spring" as const,
+    stiffness: 300,
+    damping: 30,
+    mass: 0.8,
+};
+
+// Digit: memo prevents re-render when value unchanged (3 of 4 digits don't change each second)
+const Digit = memo(function Digit({ value }: { value: string }) {
     return (
         <div className="relative h-[1.1em] w-[0.6em] flex items-center justify-center overflow-hidden">
             <AnimatePresence mode="popLayout" initial={false}>
@@ -20,12 +33,8 @@ const Digit = ({ value }: { value: string }) => {
                     initial={{ y: "100%", opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: "-100%", opacity: 0 }}
-                    transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 30,
-                        mass: 0.8
-                    }}
+                    transition={DIGIT_TRANSITION}
+                    style={{ willChange: "transform, opacity" }}
                     className="absolute"
                 >
                     {value}
@@ -33,14 +42,13 @@ const Digit = ({ value }: { value: string }) => {
             </AnimatePresence>
         </div>
     );
-};
+});
 
 export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
     const { timeLeft, setTimeLeft, isActive, setIsActive, questId: activeQuestId, setQuestId, resetTimer: contextReset } = useTimer();
     const [isMuted, setIsMuted] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
 
-    // Initialize questId if provided and not already playing something else
     useEffect(() => {
         if (questId && questId !== activeQuestId && !isActive) {
             setQuestId(questId);
@@ -56,68 +64,55 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
         } else {
             document.title = "Habitopia | Focus";
         }
-        return () => {
-            document.title = "Habitopia | Productivity RPG";
-        };
+        return () => { document.title = "Habitopia | Productivity RPG"; };
     }, [isActive, timeLeft]);
 
-    const toggleTimer = () => setIsActive(!isActive);
+    const toggleTimer = useCallback(() => setIsActive(!isActive), [isActive, setIsActive]);
 
-    const resetTimer = () => {
+    const resetTimer = useCallback(() => {
         contextReset(initialMinutes);
         setIsCompleted(false);
-    };
+    }, [contextReset, initialMinutes]);
 
     const handleFinish = useCallback(async () => {
         setIsActive(false);
         setIsCompleted(true);
-        if (!isMuted) {
-            // Audio notification could go here
-        }
-
         if (activeQuestId) {
             await completeQuest(activeQuestId);
             setQuestId(undefined);
         }
-    }, [activeQuestId, isMuted, setIsActive, setQuestId]);
+    }, [activeQuestId, setIsActive, setQuestId]);
 
-    // Check completion condition
     useEffect(() => {
         if (timeLeft === 0 && !isCompleted && !isActive) {
-            // Note: TimerContext sets isActive to false when timeLeft hit 0
             handleFinish();
         }
     }, [timeLeft, isCompleted, isActive, handleFinish]);
 
-    const getTimeParts = (totalSeconds: number) => {
-        const mins = Math.floor(totalSeconds / 60);
-        const secs = totalSeconds % 60;
-        
+    // Memoize time parts — only recalculates when timeLeft changes
+    const { m1, m2, s1, s2 } = useMemo(() => {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
         const mStr = mins.toString().padStart(2, '0');
         const sStr = secs.toString().padStart(2, '0');
-        
-        return {
-            m1: mStr[0],
-            m2: mStr[1],
-            s1: sStr[0],
-            s2: sStr[1]
-        };
-    };
+        return { m1: mStr[0], m2: mStr[1], s1: sStr[0], s2: sStr[1] };
+    }, [timeLeft]);
 
-    const { m1, m2, s1, s2 } = getTimeParts(timeLeft);
-
-    const circumference = 2 * Math.PI * 120;
-    const progress = (timeLeft / (initialMinutes * 60)) * circumference;
+    // Memoize SVG progress — only recalculates when timeLeft or initialMinutes changes
+    const strokeDashoffset = useMemo(
+        () => CIRCUMFERENCE - (timeLeft / (initialMinutes * 60)) * CIRCUMFERENCE,
+        [timeLeft, initialMinutes]
+    );
 
     return (
         <div className="flex flex-col items-center justify-center space-y-12">
             <div className="relative w-80 h-80 flex items-center justify-center">
                 {/* Progress Circle */}
-                <svg className="w-full h-full -rotate-90 transform">
+                <svg className="w-full h-full -rotate-90 transform" style={{ willChange: "auto" }}>
                     <circle
                         cx="160"
                         cy="160"
-                        r="120"
+                        r={CIRCLE_RADIUS}
                         className="stroke-foreground/10"
                         strokeWidth="12"
                         fill="transparent"
@@ -125,12 +120,12 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                     <motion.circle
                         cx="160"
                         cy="160"
-                        r="120"
-                        className="stroke-primary shadow-glow"
+                        r={CIRCLE_RADIUS}
+                        className="stroke-primary"
                         strokeWidth="12"
                         fill="transparent"
-                        strokeDasharray={circumference}
-                        animate={{ strokeDashoffset: circumference - progress }}
+                        strokeDasharray={CIRCUMFERENCE}
+                        animate={{ strokeDashoffset }}
                         transition={{ duration: 0.5, ease: "linear" }}
                     />
                 </svg>
@@ -155,7 +150,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                 <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    onClick={() => setIsMuted(!isMuted)}
+                    onClick={() => setIsMuted(m => !m)}
                     className="p-4 glass rounded-2xl text-foreground/50 dark:text-white/50 hover:text-foreground dark:hover:text-white transition cursor-pointer"
                 >
                     {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
@@ -180,7 +175,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                 </motion.button>
             </div>
 
-            {/* Completion Modal / State */}
+            {/* Completion State */}
             <AnimatePresence>
                 {isCompleted && (
                     <motion.div

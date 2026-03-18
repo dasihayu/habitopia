@@ -30,7 +30,8 @@ const NAV_ITEMS = [
 ];
 
 const SIDEBAR_MOTION_SPRING = { type: "spring" as const, stiffness: 300, damping: 30, mass: 0.78 };
-const LABEL_TRANSITION_BASE = { type: "spring" as const, stiffness: 420, damping: 36, mass: 0.72 };
+// Single constant — previously was a function creating a new object per render
+const LABEL_TRANSITION = { type: "spring" as const, stiffness: 420, damping: 36, mass: 0.72, delay: 0 };
 const MICRO_TRANSITION = { duration: 0.18, ease: [0.22, 1, 0.36, 1] as const };
 
 export default function Sidebar() {
@@ -39,26 +40,24 @@ export default function Sidebar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
-    // Handle responsive
+    // Handle responsive — debounced to avoid per-pixel re-renders on drag
     useEffect(() => {
         const checkMobile = () => {
-            setIsMobile(window.innerWidth < 768);
-            if (window.innerWidth < 768) {
-                setIsCollapsed(true);
-            }
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+            if (mobile) setIsCollapsed(true);
         };
+        let raf: number;
+        const onResize = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(checkMobile); };
         checkMobile();
-        window.addEventListener("resize", checkMobile);
-        return () => window.removeEventListener("resize", checkMobile);
+        window.addEventListener("resize", onResize, { passive: true });
+        return () => { window.removeEventListener("resize", onResize); cancelAnimationFrame(raf); };
     }, []);
 
     // Don't show sidebar on auth/onboarding/landing pages
     const isAuthPage = ["/", "/login", "/register", "/onboarding"].includes(pathname);
 
-    const getLabelTransition = (_order: number) => ({
-        ...LABEL_TRANSITION_BASE,
-        delay: 0,
-    });
+    // Stable reference — use module-level LABEL_TRANSITION constant directly
 
     // Sync layout offset with sidebar state (animate in CSS on main container).
     useEffect(() => {
@@ -96,6 +95,31 @@ export default function Sidebar() {
                     >
                         <Settings className="w-6 h-6" />
                     </Link>
+                    <button
+                        onClick={(e) => {
+                            const isDark = theme === "dark";
+                            const newTheme = isDark ? "light" : "dark";
+                            if (!document.startViewTransition) {
+                                setTheme(newTheme);
+                                return;
+                            }
+                            const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                            const x = Math.round(rect.left + rect.width / 2);
+                            const y = Math.round(rect.top + rect.height / 2);
+                            document.documentElement.style.setProperty("--vt-x", `${x}px`);
+                            document.documentElement.style.setProperty("--vt-y", `${y}px`);
+                            const root = document.documentElement;
+                            root.classList.toggle("dark", !isDark);
+                            const transition = document.startViewTransition(() => {});
+                            transition.ready.then(() => setTheme(newTheme));
+                        }}
+                        className="p-3 rounded-xl text-foreground/50 hover:text-foreground/80 hover:bg-muted transition-all hover:scale-110 active:scale-95 cursor-pointer"
+                    >
+                        <div className="relative w-6 h-6">
+                            <Sun className="w-6 h-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 absolute" />
+                            <Moon className="w-6 h-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 absolute" />
+                        </div>
+                    </button>
                 </div>
             </nav>
 
@@ -132,7 +156,7 @@ export default function Sidebar() {
                             x: isCollapsed ? -8 : 0,
                             scale: isCollapsed ? 0.98 : 1,
                         }}
-                        transition={getLabelTransition(0)}
+                        transition={LABEL_TRANSITION}
                         className={cn("flex items-center overflow-hidden flex-1 ml-3", isCollapsed && "pointer-events-none")}
                     >
                         <span className="font-bold text-lg tracking-tight whitespace-nowrap text-foreground">Habitopia</span>
@@ -210,7 +234,7 @@ export default function Sidebar() {
                                             x: isCollapsed ? -8 : 0,
                                             scale: isCollapsed ? 0.985 : 1,
                                         }}
-                                        transition={getLabelTransition(index)}
+                                        transition={LABEL_TRANSITION}
                                         className={cn(
                                             "whitespace-nowrap relative z-10 overflow-hidden text-sm",
                                             isCollapsed && "pointer-events-none"
@@ -259,7 +283,7 @@ export default function Sidebar() {
                                 x: isCollapsed ? -8 : 0,
                                 scale: isCollapsed ? 0.985 : 1,
                             }}
-                            transition={getLabelTransition(NAV_ITEMS.length)}
+                            transition={LABEL_TRANSITION}
                             className={cn("whitespace-nowrap overflow-hidden text-sm", isCollapsed && "pointer-events-none")}
                         >
                             Toggle Theme
@@ -282,7 +306,7 @@ export default function Sidebar() {
                                 x: isCollapsed ? -8 : 0,
                                 scale: isCollapsed ? 0.985 : 1,
                             }}
-                            transition={getLabelTransition(NAV_ITEMS.length + 1)}
+                            transition={LABEL_TRANSITION}
                             className={cn("whitespace-nowrap overflow-hidden text-sm", isCollapsed && "pointer-events-none")}
                         >
                             Settings
@@ -305,7 +329,7 @@ export default function Sidebar() {
                                     x: isCollapsed ? -8 : 0,
                                     scale: isCollapsed ? 0.985 : 1,
                                 }}
-                                transition={getLabelTransition(NAV_ITEMS.length + 2)}
+                                transition={LABEL_TRANSITION}
                                 className={cn("whitespace-nowrap overflow-hidden text-sm font-medium", isCollapsed && "pointer-events-none")}
                             >
                                 Logout

@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Zap, Trophy, Shield, Star } from "lucide-react";
 
@@ -14,12 +15,30 @@ interface PlayerHUDProps {
     actionSlot?: React.ReactNode;
 }
 
-export default function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
-    // Simple XP formula for level progress: (XP / (Level * 1000)) * 100
-    const xpNeeded = user.level * 1000;
-    const progress = Math.min((user.xp / xpNeeded) * 100, 100);
+// Stat card: use CSS hover instead of motion.div to avoid per-card spring tracking
+const StatCard = memo(function StatCard({ icon, value, label }: { icon: React.ReactNode; value: React.ReactNode; label: string }) {
+    return (
+        <div className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center min-w-[100px] cursor-pointer transition-transform duration-200 ease-out hover:scale-105 hover:-translate-y-1 active:scale-95">
+            {icon}
+            <span className="text-xl font-bold">{value}</span>
+            <span className="text-[10px] text-foreground/40 uppercase tracking-tighter">{label}</span>
+        </div>
+    );
+});
 
-    const defaultAvatar = `https://api.dicebear.com/9.x/avataaars/svg?seed=${user.username}`;
+const BADGE_FLOAT = { y: [0, -4, 0] };
+const BADGE_TRANSITION = { duration: 3, repeat: Infinity, ease: "easeInOut" as const };
+const AVATAR_HOVER = { scale: 1.05, rotate: 2 } as const;
+const AVATAR_TRANSITION = { type: "spring" as const, stiffness: 400, damping: 20 };
+
+export default memo(function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
+    // Guard against level=0 to avoid division-by-zero / NaN in progress
+    const xpNeeded = useMemo(() => Math.max(1, user.level) * 1000, [user.level]);
+    const progress = useMemo(() => Math.min((user.xp / xpNeeded) * 100, 100), [user.xp, xpNeeded]);
+    const defaultAvatar = useMemo(
+        () => `https://api.dicebear.com/9.x/avataaars/svg?seed=${user.username}`,
+        [user.username]
+    );
 
     return (
         <motion.div
@@ -28,26 +47,29 @@ export default function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
             transition={{ duration: 0.5 }}
             className="glass p-6 rounded-3xl mb-8 relative overflow-hidden group"
         >
-            {/* Background Glow */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[60px] group-hover:bg-primary/30 transition-all pointer-events-none" />
+            {/* Background Glow — pointer-events off, no transition-all (expensive paint) */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[60px] pointer-events-none" />
 
             <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
                 {/* Avatar & Level Badge */}
                 <div className="relative">
                     <motion.div
-                        whileHover={{ scale: 1.05, rotate: 2 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                        whileHover={AVATAR_HOVER}
+                        transition={AVATAR_TRANSITION}
                         className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-primary/30 shadow-glow cursor-pointer"
                     >
                         <img
                             src={user.avatarUrl || defaultAvatar}
                             alt={user.username}
+                            loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-110"
                         />
                     </motion.div>
                     <motion.div
-                        animate={{ y: [0, -4, 0] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                        animate={BADGE_FLOAT}
+                        transition={BADGE_TRANSITION}
+                        style={{ willChange: "transform" }}
                         className="absolute -bottom-3 -right-3 w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center font-bold text-lg shadow-[0_0_20px_rgba(var(--primary),0.5)] border border-white/20"
                     >
                         {user.level}
@@ -79,17 +101,17 @@ export default function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
                                 animate={{ width: `${progress}%` }}
                                 transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
                             >
-                                {/* Premium Shine Effect */}
+                                {/* Shine effect — uses transform only (GPU composited) */}
                                 <motion.div
                                     animate={{ x: ["-100%", "250%"] }}
-                                    transition={{ 
-                                        duration: 2.5, 
-                                        repeat: Infinity, 
+                                    transition={{
+                                        duration: 2.5,
+                                        repeat: Infinity,
                                         ease: "linear",
                                         repeatDelay: 1.5
                                     }}
+                                    style={{ willChange: "transform", transform: "skewX(-20deg)" }}
                                     className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                                    style={{ transform: "skewX(-20deg)" }}
                                 />
                             </motion.div>
                         </div>
@@ -103,31 +125,12 @@ export default function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
                             {actionSlot}
                         </div>
                     )}
-                    {/* Stats Grid */}
                     <div className="grid grid-cols-2 gap-4 w-full md:w-auto">
-                        <motion.div
-                            whileHover={{ scale: 1.05, y: -4 }}
-                            whileTap={{ scale: 0.95 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                            className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center min-w-[100px] cursor-pointer transition-colors"
-                        >
-                            <Zap className="w-6 h-6 text-orange-400 mb-1" />
-                            <span className="text-xl font-bold">{user.streak}</span>
-                            <span className="text-[10px] text-foreground/40 uppercase tracking-tighter">Streak</span>
-                        </motion.div>
-                        <motion.div
-                            whileHover={{ scale: 1.05, y: -4 }}
-                            whileTap={{ scale: 0.95 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                            className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center min-w-[100px] cursor-pointer transition-colors"
-                        >
-                            <Trophy className="w-6 h-6 text-yellow-500 mb-1" />
-                            <span className="text-xl font-bold">12</span>
-                            <span className="text-[10px] text-foreground/40 uppercase tracking-tighter">Badges</span>
-                        </motion.div>
+                        <StatCard icon={<Zap className="w-6 h-6 text-orange-400 mb-1" />} value={user.streak} label="Streak" />
+                        <StatCard icon={<Trophy className="w-6 h-6 text-yellow-500 mb-1" />} value={12} label="Badges" />
                     </div>
                 </div>
             </div>
         </motion.div>
     );
-}
+});

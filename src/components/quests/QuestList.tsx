@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { completeQuest } from "@/app/actions/quests";
 import { Sword, CheckCircle, Target } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,19 +18,35 @@ interface QuestListProps {
     initialQuests: Quest[];
 }
 
+// Static variant objects — defined outside to avoid re-creation on each render
+const CARD_VARIANTS = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { opacity: 1, scale: 1 },
+} as const;
+
+const CARD_TRANSITION = {
+    type: "spring" as const,
+    stiffness: 400,
+    damping: 30,
+    mass: 0.8,
+} as const;
+
+const CARD_EXIT = { opacity: 0, scale: 0.9, transition: { duration: 0.2 } } as const;
+const CARD_VIEWPORT = { once: true, margin: "-50px" } as const;
+
 export default function QuestList({ initialQuests }: QuestListProps) {
     const [quests, setQuests] = useState<Quest[]>(initialQuests);
     const [completing, setCompleting] = useState<string | null>(null);
 
-    async function handleComplete(id: string) {
+    // useCallback prevents new function reference on every render
+    const handleComplete = useCallback(async (id: string) => {
         setCompleting(id);
         const res = await completeQuest(id);
         if ('success' in res && res.success) {
             setQuests(prev => prev.filter(q => q.id !== id));
-            // In a real app, you might want to show a level-up animation or toast here
         }
         setCompleting(null);
-    }
+    }, []);
 
     return (
         <div className="space-y-6">
@@ -44,27 +60,20 @@ export default function QuestList({ initialQuests }: QuestListProps) {
                     >
                         <CheckCircle className="w-16 h-16 text-primary/20 mx-auto mb-6" />
                         <h3 className="text-2xl font-bold mb-2">Victory!</h3>
-                        <p className="text-foreground/40 max-w-xs mx-auto">You've mastered all your challenges for today. Come back tomorrow for a new set of quests.</p>
+                        <p className="text-foreground/40 max-w-xs mx-auto">You&apos;ve mastered all your challenges for today. Come back tomorrow for a new set of quests.</p>
                     </motion.div>
                 ) : (
                     quests.map((quest) => (
                         <motion.div
                             key={quest.id}
-                            layout
-                            variants={{
-                                hidden: { opacity: 0, scale: 0.95 },
-                                visible: { opacity: 1, scale: 1 }
-                            }}
+                            // Removed `layout` prop — layout animations measure and mutate DOM each frame,
+                            // expensive when list is long. Exit animation still works without it.
+                            variants={CARD_VARIANTS}
                             initial="hidden"
                             whileInView="visible"
-                            viewport={{ once: true, margin: "-50px" }}
-                            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                            transition={{ 
-                                type: "spring",
-                                stiffness: 400,
-                                damping: 30,
-                                mass: 0.8
-                            }}
+                            viewport={CARD_VIEWPORT}
+                            exit={CARD_EXIT}
+                            transition={CARD_TRANSITION}
                             className="glass p-6 md:p-8 rounded-3xl flex flex-col md:flex-row items-center gap-8 group relative overflow-hidden"
                         >
                             {/* Visual Accent */}
