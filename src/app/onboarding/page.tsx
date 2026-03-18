@@ -157,7 +157,7 @@ export default function OnboardingPage() {
                             </div>
 
                             <div className="mt-8 flex justify-between">
-                                <button onClick={prevStep} className="px-8 py-3 glass rounded-xl font-bold hover:bg-white/10">Back</button>
+                                <button onClick={prevStep} className="px-8 py-3 glass rounded-xl font-bold hover:bg-foreground/5 transition-colors">Back</button>
                                 <button onClick={nextStep} className="px-8 py-3 bg-primary rounded-xl font-bold hover:brightness-110">Continue</button>
                             </div>
                         </motion.div>
@@ -196,7 +196,7 @@ export default function OnboardingPage() {
                             </div>
 
                             <div className="mt-8 flex justify-between">
-                                <button onClick={prevStep} className="px-8 py-3 glass rounded-xl font-bold hover:bg-white/10">Back</button>
+                                <button onClick={prevStep} className="px-8 py-3 glass rounded-xl font-bold hover:bg-foreground/5 transition-colors">Back</button>
                                 <button
                                     onClick={handleFinish}
                                     disabled={loading || activeHours.length === 0}

@@ -56,7 +56,7 @@ export default async function FocusPage({
                                 <a
                                     key={q.id}
                                     href={`/focus?questId=${q.id}`}
-                                    className="glass p-4 rounded-2xl flex items-center justify-between hover:bg-white/10 transition border-white/5 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                                    className="glass p-4 rounded-2xl flex items-center justify-between hover:bg-foreground/5 transition border-border/20 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                                 >
                                     <span className="font-bold text-sm truncate">{q.title}</span>
                                     <span className="text-xs text-primary font-black">+{q.xpReward} XP</span>

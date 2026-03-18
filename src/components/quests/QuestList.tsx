@@ -40,7 +40,7 @@ export default function QuestList({ initialQuests }: QuestListProps) {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
-                        className="glass p-16 text-center rounded-3xl border-dashed border-white/5 bg-white/[0.02]"
+                        className="glass p-16 text-center rounded-3xl border-dashed border-border/40 bg-foreground/[0.02]"
                     >
                         <CheckCircle className="w-16 h-16 text-primary/20 mx-auto mb-6" />
                         <h3 className="text-2xl font-bold mb-2">Victory!</h3>
@@ -81,7 +81,7 @@ export default function QuestList({ initialQuests }: QuestListProps) {
                                         {quest.difficulty}
                                     </span>
                                 </div>
-                                <h4 className="text-xl font-bold group-hover:text-white transition-colors uppercase tracking-tight truncate">{quest.title}</h4>
+                                <h4 className="text-xl font-bold group-hover:text-primary transition-colors uppercase tracking-tight truncate">{quest.title}</h4>
                                 <p className="text-sm text-foreground/50 leading-relaxed line-clamp-2">{quest.description}</p>
                             </div>
 

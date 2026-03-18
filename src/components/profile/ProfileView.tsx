@@ -42,7 +42,7 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={() => setIsEditModalOpen(true)}
-                                className="glass p-3 rounded-xl hover:bg-white/10 transition-colors cursor-pointer"
+                                className="glass p-3 rounded-xl hover:bg-foreground/10 transition-colors cursor-pointer"
                                 title="Edit Profile"
                             >
                                 <Pencil className="w-5 h-5 text-foreground/70" />
@@ -50,7 +50,7 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                             <motion.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
-                                className="glass p-3 rounded-xl hover:bg-white/10 transition-colors cursor-pointer"
+                                className="glass p-3 rounded-xl hover:bg-foreground/10 transition-colors cursor-pointer"
                                 title="Share Profile"
                                 onClick={() => {
                                     navigator.clipboard.writeText(`${window.location.origin}/profile/${user.username}`);
@@ -65,7 +65,7 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={handleFollow}
-                            className={`glass px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-colors cursor-pointer ${isFollowing ? 'bg-primary/20 text-primary' : 'hover:bg-white/10'}`}
+                            className={`glass px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-colors cursor-pointer ${isFollowing ? 'bg-primary/20 text-primary' : 'hover:bg-foreground/10'}`}
                         >
                             {isFollowing ? <UserCheck className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
                             {isFollowing ? "Following" : "Follow"}
@@ -154,7 +154,7 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
 
                 {/* Right Column: Quest History */}
                 <div className="lg:col-span-2">
-                    <div className="glass p-8 rounded-3xl h-full border-white/5 bg-white/[0.01]">
+                    <div className="glass p-8 rounded-3xl h-full border-border/10 bg-foreground/[0.01]">
                         <h4 className="text-sm font-bold text-foreground/40 uppercase tracking-widest mb-8 flex items-center gap-2">
                             <History className="w-5 h-5 text-primary" />
                             Activity History

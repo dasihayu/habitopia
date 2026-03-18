@@ -70,7 +70,7 @@ export default async function DashboardPage() {
 
                         <div className="space-y-4">
                             {quests.length === 0 ? (
-                                <div className="glass p-12 text-center rounded-3xl border-dashed border-white/5 bg-white/[0.02]">
+                                <div className="glass p-12 text-center rounded-3xl border-dashed border-border/40 bg-foreground/[0.02]">
                                     <CheckCircle className="w-12 h-12 text-foreground/10 mx-auto mb-4" />
                                     <p className="text-foreground/40 font-medium">All quests completed for today!</p>
                                     <button className="mt-4 text-primary font-bold text-sm">Generate Bonus Quests</button>
@@ -79,7 +79,7 @@ export default async function DashboardPage() {
                                 quests.slice(0, 3).map((quest) => (
                                     <div
                                         key={quest.id}
-                                        className="glass p-6 rounded-2xl flex items-center gap-6 group hover:bg-white/[0.07] hover:scale-[1.02] hover:-translate-y-1 hover:shadow-glow transition-all duration-300 cursor-pointer border-white/5"
+                                        className="glass p-6 rounded-2xl flex items-center gap-6 group hover:bg-foreground/5 hover:scale-[1.02] hover:-translate-y-1 hover:shadow-glow transition-all duration-300 cursor-pointer border-border/20"
                                     >
                                         <div className="w-14 h-14 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                                             <Timer className="text-foreground/40 group-hover:text-primary w-7 h-7" />

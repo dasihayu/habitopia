@@ -118,7 +118,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                         cx="160"
                         cy="160"
                         r="120"
-                        className="stroke-white/5"
+                        className="stroke-foreground/10"
                         strokeWidth="12"
                         fill="transparent"
                     />
@@ -137,7 +137,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
 
                 {/* Time Display */}
                 <div className="absolute flex flex-col items-center">
-                    <div className="text-7xl font-black text-white flex items-center tabular-nums">
+                    <div className="text-7xl font-black text-foreground/50 dark:text-white flex items-center tabular-nums">
                         <Digit value={m1} />
                         <Digit value={m2} />
                         <span className="mx-1 opacity-50 relative -top-1">:</span>
@@ -156,7 +156,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setIsMuted(!isMuted)}
-                    className="p-4 glass rounded-2xl text-foreground/50 hover:text-white transition cursor-pointer"
+                    className="p-4 glass rounded-2xl text-foreground/50 dark:text-white/50 hover:text-foreground dark:hover:text-white transition cursor-pointer"
                 >
                     {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
                 </motion.button>
@@ -165,8 +165,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={toggleTimer}
-                    className={`w-20 h-20 rounded-3xl flex items-center justify-center transition-shadow shadow-glow cursor-pointer ${isActive ? "bg-white/10 text-white" : "bg-primary text-white"
-                        }`}
+                    className="w-20 h-20 rounded-3xl flex items-center justify-center bg-primary text-white shadow-glow transition-all cursor-pointer"
                 >
                     {isActive ? <Pause className="fill-current w-8 h-8" /> : <Play className="fill-current w-8 h-8 ml-1" />}
                 </motion.button>
@@ -175,7 +174,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                     whileHover={{ scale: 1.1, rotate: -15 }}
                     whileTap={{ scale: 0.9, rotate: -45 }}
                     onClick={resetTimer}
-                    className="p-4 glass rounded-2xl text-foreground/50 hover:text-white transition cursor-pointer"
+                    className="p-4 glass rounded-2xl text-foreground/50 dark:text-white/50 hover:text-foreground dark:hover:text-white transition cursor-pointer"
                 >
                     <RotateCcw className="w-6 h-6" />
                 </motion.button>

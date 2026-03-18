@@ -37,7 +37,7 @@ export default function Navbar() {
                             href={href}
                             className={`flex flex-col md:flex-row items-center gap-1 p-3 rounded-xl transition-all ${isActive
                                     ? "bg-primary/20 text-primary shadow-glow ring-1 ring-primary/30"
-                                    : "text-foreground/50 hover:text-foreground/80 hover:bg-white/5"
+                                    : "text-foreground/50 hover:text-foreground/80 hover:bg-foreground/5"
                                 }`}
                         >
                             <Icon className="w-6 h-6" />

@@ -143,13 +143,12 @@ export default function Sidebar() {
                         aria-hidden={!isCollapsed}
                         animate={{
                             opacity: isCollapsed ? 1 : 0,
-                            scale: isCollapsed ? 1 : 0.9,
-                            x: isCollapsed ? 0 : -4,
+                            scale: isCollapsed ? 1 : 0.8,
                         }}
                         transition={MICRO_TRANSITION}
                         className={cn(
-                            "absolute top-1/2 -translate-y-1/2 h-4 w-4 flex items-center justify-center hover:bg-foreground/5 rounded text-muted-foreground hover:text-foreground active:scale-95",
-                            isCollapsed ? "right-1.5" : "pointer-events-none"
+                            "absolute top-1/2 -translate-y-1/2 right-1.5 h-4 w-4 flex items-center justify-center hover:bg-foreground/5 rounded text-muted-foreground hover:text-foreground active:scale-95",
+                            !isCollapsed && "pointer-events-none"
                         )}
                     >
                         <ChevronRight className="w-3 h-3" />
@@ -160,8 +159,7 @@ export default function Sidebar() {
                         aria-hidden={isCollapsed}
                         animate={{
                             opacity: isCollapsed ? 0 : 1,
-                            scale: isCollapsed ? 0.9 : 1,
-                            x: isCollapsed ? -6 : 0,
+                            scale: isCollapsed ? 0.8 : 1,
                         }}
                         transition={MICRO_TRANSITION}
                         className={cn(
@@ -229,8 +227,10 @@ export default function Sidebar() {
                     {/* Theme Toggle */}
                     <button
                         onClick={(e) => {
-                            const newTheme = theme === "dark" ? "light" : "dark";
-                            // Get button center for the circle origin
+                            const isDark = theme === "dark";
+                            const newTheme = isDark ? "light" : "dark";
+
+                            // Get button center for the ripple origin
                             const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
                             const x = Math.round(rect.left + rect.width / 2);
                             const y = Math.round(rect.top + rect.height / 2);
@@ -241,7 +241,14 @@ export default function Sidebar() {
                                 setTheme(newTheme);
                                 return;
                             }
-                            document.startViewTransition(() => setTheme(newTheme));
+
+                            // CRITICAL: toggle class synchronously inside callback so VT
+                            // API captures the real before → after DOM change.
+                            // setTheme() is called after to keep next-themes in sync.
+                            const transition = document.startViewTransition(() => {
+                                document.documentElement.classList.toggle("dark", !isDark);
+                            });
+                            transition.ready.then(() => setTheme(newTheme));
                         }}
                         className="flex items-center h-12 rounded-xl w-full text-muted-foreground hover:text-foreground hover:bg-foreground/5 relative overflow-hidden group cursor-pointer transition-colors duration-200"
                     >

@@ -55,17 +55,17 @@ export default async function AchievementsPage() {
                                     : "opacity-40 grayscale"
                                     }`}
                             >
-                                <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mb-6 relative ${isUnlocked ? "bg-primary/20 shadow-glow" : "bg-white/5"
+                                <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mb-6 relative ${isUnlocked ? "bg-primary/20 shadow-glow" : "bg-black/5 dark:bg-white/5"
                                     }`}>
                                     <Icon className={`w-10 h-10 ${isUnlocked ? "text-primary" : "text-foreground/20"}`} />
                                     {!isUnlocked && (
-                                        <div className="absolute -top-2 -right-2 bg-background p-1.5 rounded-lg border border-white/5">
+                                        <div className="absolute -top-2 -right-2 bg-background p-1.5 rounded-lg border border-border/40">
                                             <Lock className="w-4 h-4 text-foreground/20" />
                                         </div>
                                     )}
                                 </div>
 
-                                <h4 className={`text-xl font-bold mb-2 ${isUnlocked ? "text-white" : "text-foreground/40"}`}>
+                                <h4 className={`text-xl font-bold mb-2 ${isUnlocked ? "text-foreground" : "text-foreground/40"}`}>
                                     {achievement.name}
                                 </h4>
                                 <p className="text-sm text-foreground/30 mb-6 leading-relaxed">
