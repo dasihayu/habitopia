@@ -100,7 +100,11 @@ export default function Sidebar() {
                             const isDark = theme === "dark";
                             const newTheme = isDark ? "light" : "dark";
                             if (!document.startViewTransition) {
+                                document.documentElement.classList.add("theme-transitioning");
                                 setTheme(newTheme);
+                                setTimeout(() => {
+                                    document.documentElement.classList.remove("theme-transitioning");
+                                }, 500);
                                 return;
                             }
                             const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
@@ -262,7 +266,11 @@ export default function Sidebar() {
                             document.documentElement.style.setProperty("--vt-y", `${y}px`);
 
                             if (!document.startViewTransition) {
+                                document.documentElement.classList.add("theme-transitioning");
                                 setTheme(newTheme);
+                                setTimeout(() => {
+                                    document.documentElement.classList.remove("theme-transitioning");
+                                }, 500);
                                 return;
                             }
                             document.startViewTransition(() => setTheme(newTheme));

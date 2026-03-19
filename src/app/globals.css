@@ -118,7 +118,6 @@ body {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--card-border);
   box-shadow: var(--shadow-glass);
-  contain: layout style;
 }
 
 @media (max-width: 768px) {
@@ -295,24 +294,27 @@ body {
   }
 }
 
-/* Mobile: smooth fade + subtle scale — much lighter than clip-path */
+/* Mobile: old stays put, new slides up + fades in — natural mobile feel */
 @media (max-width: 768px) {
   ::view-transition-old(root) {
-    animation: vt-mobile-out 0.2s cubic-bezier(0.4, 0, 1, 1) forwards;
+    animation: none;  /* Keep old visible as background */
     z-index: 1;
   }
   ::view-transition-new(root) {
-    animation: vt-mobile-in 0.45s cubic-bezier(0, 0, 0.2, 1) forwards;
+    animation: vt-mobile-in 0.5s cubic-bezier(0, 0, 0.2, 1) forwards;
     z-index: 2;
   }
-  @keyframes vt-mobile-out {
-    from { opacity: 1; transform: scale(1); }
-    to   { opacity: 0; transform: scale(0.97); }
-  }
   @keyframes vt-mobile-in {
-    from { opacity: 0; transform: scale(0.97); }
-    to   { opacity: 1; transform: scale(1); }
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
+}
+
+/* Fallback: smooth color transition for browsers without View Transitions API (e.g. older iOS Safari) */
+html.theme-transitioning,
+html.theme-transitioning * {
+  transition: background-color 0.45s ease, color 0.45s ease,
+              border-color 0.45s ease, box-shadow 0.45s ease !important;
 }
 
 /* Respect users who prefer reduced motion */
