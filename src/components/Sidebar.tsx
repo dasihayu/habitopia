@@ -114,8 +114,10 @@ export default function Sidebar() {
                             
                             // Accurate origin: use exact click/touch point, fallback to button center
                             const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                            const x = e.clientX > 0 ? e.clientX : Math.round(rect.left + rect.width / 2);
-                            const y = e.clientY > 0 ? e.clientY : Math.round(rect.top + rect.height / 2);
+                            const nativeEvent = e.nativeEvent as any;
+                            const touch = nativeEvent.touches?.[0] || nativeEvent.changedTouches?.[0];
+                            const x = (e.clientX > 0 ? e.clientX : (touch?.clientX || Math.round(rect.left + rect.width / 2)));
+                            const y = (e.clientY > 0 ? e.clientY : (touch?.clientY || Math.round(rect.top + rect.height / 2)));
                             
                             // Set coordinates on root and force a reflow to ensure the VT snapshot sees them
                             const doc = document.documentElement;
@@ -123,9 +125,15 @@ export default function Sidebar() {
                             doc.style.setProperty("--vt-y", `${y}px`);
                             void doc.offsetHeight;
                             
-                            document.startViewTransition(() => {
-                                setTheme(newTheme);
-                                document.documentElement.classList.toggle("dark", newTheme === "dark");
+                            requestAnimationFrame(() => {
+                                if (!document.startViewTransition) {
+                                    setTheme(newTheme);
+                                    return;
+                                }
+                                document.startViewTransition(() => {
+                                    setTheme(newTheme);
+                                    document.documentElement.classList.toggle("dark", newTheme === "dark");
+                                });
                             });
                         }}
                         className="p-3 rounded-xl text-foreground/50 hover:text-foreground/80 hover:bg-muted transition-all hover:scale-110 active:scale-95 cursor-pointer"
@@ -272,23 +280,29 @@ export default function Sidebar() {
                             const newTheme = theme === "dark" ? "light" : "dark";
                             // Accurate origin: use exact click/touch point, fallback to button center
                             const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
-                            const x = e.clientX || Math.round(rect.left + rect.width / 2);
-                            const y = e.clientY || Math.round(rect.top + rect.height / 2);
+                            const nativeEvent = e.nativeEvent as any;
+                            const touch = nativeEvent.touches?.[0] || nativeEvent.changedTouches?.[0];
+                            const x = (e.clientX > 0 ? e.clientX : (touch?.clientX || Math.round(rect.left + rect.width / 2)));
+                            const y = (e.clientY > 0 ? e.clientY : (touch?.clientY || Math.round(rect.top + rect.height / 2)));
                             
-                            document.documentElement.style.setProperty("--vt-x", `${x}px`);
-                            document.documentElement.style.setProperty("--vt-y", `${y}px`);
+                            const doc = document.documentElement;
+                            doc.style.setProperty("--vt-x", `${x}px`);
+                            doc.style.setProperty("--vt-y", `${y}px`);
+                            void doc.offsetHeight;
 
-                            if (!document.startViewTransition) {
-                                document.documentElement.classList.add("theme-transitioning");
-                                setTheme(newTheme);
-                                setTimeout(() => {
-                                    document.documentElement.classList.remove("theme-transitioning");
-                                }, 500);
-                                return;
-                            }
-                            document.startViewTransition(() => {
-                                setTheme(newTheme);
-                                document.documentElement.classList.toggle("dark", newTheme === "dark");
+                            requestAnimationFrame(() => {
+                                if (!document.startViewTransition) {
+                                    doc.classList.add("theme-transitioning");
+                                    setTheme(newTheme);
+                                    setTimeout(() => {
+                                        doc.classList.remove("theme-transitioning");
+                                    }, 500);
+                                    return;
+                                }
+                                document.startViewTransition(() => {
+                                    setTheme(newTheme);
+                                    document.documentElement.classList.toggle("dark", newTheme === "dark");
+                                });
                             });
                         }}
                         className="flex items-center h-12 rounded-xl w-full text-muted-foreground hover:text-foreground hover:bg-foreground/5 relative overflow-hidden group cursor-pointer transition-colors duration-200"

@@ -107,9 +107,12 @@ body {
   scrollbar-width: thin;
   scrollbar-color: rgba(120, 120, 120, 0.5) transparent;
 }
-.dark * {
-  scrollbar-color: rgba(210, 210, 210, 0.35) transparent;
+:root {
   --sidebar-width: 0px;
+  
+  /* View Transition coordinates - default to center */
+  --vt-x: 50%;
+  --vt-y: 50%;
 }
 
 @media (min-width: 768px) {
@@ -294,17 +297,20 @@ body {
 
 /* New view: slow cinematic circular wipe from the toggle button position */
 ::view-transition-new(root) {
+  --x: var(--vt-x, 50%);
+  --y: var(--vt-y, 50%);
   animation: vt-reveal 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   z-index: 2;
+  mix-blend-mode: normal;
 }
 
 @keyframes vt-reveal {
   from {
-    clip-path: circle(0% at var(--vt-x, 50%) var(--vt-y, 50%));
+    clip-path: circle(0% at var(--x, 50%) var(--y, 50%));
     opacity: 1;
   }
   to {
-    clip-path: circle(200% at var(--vt-x, 50%) var(--vt-y, 50%));
+    clip-path: circle(200% at var(--x, 50%) var(--y, 50%));
     opacity: 1;
   }
 }
