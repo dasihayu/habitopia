@@ -94,24 +94,29 @@ export default function Sidebar() {
     return (
         <>
             {/* Mobile Bottom Nav */}
-            <nav suppressHydrationWarning className="fixed bottom-0 left-0 w-full z-[100] px-2 sm:px-4 pb-4 sm:pb-6 md:hidden">
-                <div className="glass flex items-center justify-around p-1 sm:p-3 rounded-2xl border-white/10 shadow-2xl bg-background/80 backdrop-blur-md">
+            <nav suppressHydrationWarning className="fixed bottom-0 left-0 w-full z-[100] px-3 sm:px-6 pb-4 sm:pb-6 md:hidden pointer-events-none">
+                <div className="glass flex items-center justify-around p-2 sm:p-3 rounded-2xl border-white/10 shadow-2xl bg-background/80 backdrop-blur-md pointer-events-auto max-w-[400px] mx-auto">
                     {NAV_ITEMS.map(({ href, icon: Icon }) => {
                         const isActive = pathname === href;
                         return (
-                            <Link key={href} href={href} className={cn("p-2 sm:p-3 rounded-xl relative", isActive ? "text-primary" : "text-foreground/50")}>
+                            <Link key={href} href={href} className={cn("p-2 sm:p-3 rounded-xl relative", isActive ? "text-primary" : "text-foreground/50 hover:text-foreground/80 hover:bg-muted")}>
                                 {isActive && <motion.div layoutId="mobileNav" className="absolute inset-0 bg-primary/10 rounded-xl" />}
                                 <Icon className="w-5 h-5 sm:w-6 sm:h-6 relative z-10" />
                             </Link>
                         );
                     })}
-                    <Link
-                        href="/settings"
-                        className="p-2 sm:p-3 rounded-xl text-foreground/50 hover:text-foreground/80 hover:bg-muted transition-all hover:scale-110 active:scale-95"
-                    >
-                        <Settings className="w-5 h-5 sm:w-6 sm:h-6" />
-                    </Link>
-                    <button
+                </div>
+            </nav>
+            
+            {/* Mobile Top Header (Settings & Theme) */}
+            <header suppressHydrationWarning className="fixed top-0 left-0 w-full z-[100] p-4 flex justify-end gap-2 md:hidden pointer-events-none">
+                <Link
+                    href="/settings"
+                    className="glass pointer-events-auto p-2.5 rounded-xl text-foreground/50 hover:text-foreground/80 hover:bg-muted transition-all active:scale-95 shadow-lg bg-background/80 backdrop-blur-md border border-white/10"
+                >
+                    <Settings className="w-5 h-5" />
+                </Link>
+                <button
                         onClick={(e) => {
                             const isDark = theme === "dark";
                             const newTheme = isDark ? "light" : "dark";
@@ -146,16 +151,15 @@ export default function Sidebar() {
                                 });
                             });
                         }}
-                        className="p-2 sm:p-3 rounded-xl text-foreground/50 hover:text-foreground/80 hover:bg-muted transition-all hover:scale-110 active:scale-95 cursor-pointer"
+                        className="glass pointer-events-auto p-2.5 rounded-xl text-foreground/50 hover:text-foreground/80 hover:bg-muted transition-all active:scale-95 shadow-lg bg-background/80 backdrop-blur-md border border-white/10 cursor-pointer"
                         title="Toggle theme"
                     >
-                        <div className="relative w-5 h-5 sm:w-6 sm:h-6">
-                            <Sun className="w-5 h-5 sm:w-6 sm:h-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 absolute" />
-                            <Moon className="w-5 h-5 sm:w-6 sm:h-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 absolute" />
+                        <div className="relative w-5 h-5">
+                            <Sun className="w-5 h-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 absolute" />
+                            <Moon className="w-5 h-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 absolute" />
                         </div>
                     </button>
-                </div>
-            </nav>
+            </header>
 
             {/* Desktop Sidebar */}
             <motion.aside
