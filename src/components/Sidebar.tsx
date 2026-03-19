@@ -21,6 +21,26 @@ import { logout } from "@/app/actions/auth";
 import { cn } from "@/lib/utils";
 import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
 
+const injectViewTransitionOrigin = (x: number, y: number) => {
+    let styleEl = document.getElementById("vt-origin-style");
+    if (!styleEl) {
+        styleEl = document.createElement("style");
+        styleEl.id = "vt-origin-style";
+        document.head.appendChild(styleEl);
+    }
+    styleEl.innerHTML = `
+        ::view-transition-new(root) {
+            animation: vt-reveal 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            z-index: 2;
+            mix-blend-mode: normal;
+        }
+        @keyframes vt-reveal {
+            from { clip-path: circle(0% at ${x}px ${y}px); opacity: 1; }
+            to { clip-path: circle(200% at ${x}px ${y}px); opacity: 1; }
+        }
+    `;
+};
+
 const NAV_ITEMS = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/quests", label: "Quests", icon: Sword },
@@ -119,14 +139,12 @@ export default function Sidebar() {
                             const x = (e.clientX > 0 ? e.clientX : (touch?.clientX || Math.round(rect.left + rect.width / 2)));
                             const y = (e.clientY > 0 ? e.clientY : (touch?.clientY || Math.round(rect.top + rect.height / 2)));
                             
-                            // Set coordinates on root and force a reflow to ensure the VT snapshot sees them
-                            const doc = document.documentElement;
-                            doc.style.setProperty("--vt-x", `${x}px`);
-                            doc.style.setProperty("--vt-y", `${y}px`);
-                            void doc.offsetHeight;
+                            // Inject actual coordinate animation (bypasses CSS variable inheritance limits on pseudo-elements)
+                            injectViewTransitionOrigin(x, y);
                             
                             requestAnimationFrame(() => {
                                 if (!document.startViewTransition) {
+
                                     setTheme(newTheme);
                                     return;
                                 }
@@ -285,17 +303,16 @@ export default function Sidebar() {
                             const x = (e.clientX > 0 ? e.clientX : (touch?.clientX || Math.round(rect.left + rect.width / 2)));
                             const y = (e.clientY > 0 ? e.clientY : (touch?.clientY || Math.round(rect.top + rect.height / 2)));
                             
-                            const doc = document.documentElement;
-                            doc.style.setProperty("--vt-x", `${x}px`);
-                            doc.style.setProperty("--vt-y", `${y}px`);
-                            void doc.offsetHeight;
+                            // Inject actual coordinate animation (bypasses CSS variable inheritance limits on pseudo-elements)
+                            injectViewTransitionOrigin(x, y);
 
                             requestAnimationFrame(() => {
                                 if (!document.startViewTransition) {
-                                    doc.classList.add("theme-transitioning");
+                                    document.documentElement.classList.add("theme-transitioning");
                                     setTheme(newTheme);
                                     setTimeout(() => {
-                                        doc.classList.remove("theme-transitioning");
+                                        document.documentElement.classList.remove("theme-transitioning");
+
                                     }, 500);
                                     return;
                                 }

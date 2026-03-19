@@ -295,24 +295,11 @@ body {
   z-index: 1;
 }
 
-/* New view: slow cinematic circular wipe from the toggle button position */
-::view-transition-new(root) {
-  --x: var(--vt-x, 50%);
-  --y: var(--vt-y, 50%);
-  animation: vt-reveal 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  z-index: 2;
-  mix-blend-mode: normal;
-}
-
-@keyframes vt-reveal {
-  from {
-    clip-path: circle(0% at var(--x, 50%) var(--y, 50%));
-    opacity: 1;
-  }
-  to {
-    clip-path: circle(200% at var(--x, 50%) var(--y, 50%));
-    opacity: 1;
-  }
+/* View Transition overrides for the old view */
+::view-transition-old(root) {
+  animation: none;
+  opacity: 0;
+  z-index: -1;
 }
 
 
