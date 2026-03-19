@@ -132,7 +132,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
 
                 {/* Time Display */}
                 <div className="absolute flex flex-col items-center">
-                    <div className="text-[4rem] sm:text-7xl tracking-tighter sm:tracking-normal font-black text-foreground/50 dark:text-white flex items-center tabular-nums">
+                    <div className="text-5xl sm:text-6xl tracking-tight font-extrabold text-foreground/50 dark:text-white flex items-center tabular-nums">
                         <Digit value={m1} />
                         <Digit value={m2} />
                         <span className="mx-1 opacity-50 relative -top-1">:</span>
