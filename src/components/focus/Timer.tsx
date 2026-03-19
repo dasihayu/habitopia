@@ -26,7 +26,7 @@ const DIGIT_TRANSITION = {
 // Digit: memo prevents re-render when value unchanged (3 of 4 digits don't change each second)
 const Digit = memo(function Digit({ value }: { value: string }) {
     return (
-        <div className="relative h-[1.1em] w-[0.56em] flex items-center justify-center overflow-hidden">
+        <div className="relative h-[1.1em] w-[0.65em] flex items-center justify-center overflow-hidden">
             <AnimatePresence mode="popLayout" initial={false}>
                 <motion.span
                     key={value}
@@ -131,10 +131,10 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                 </svg>
 
                 <div className="absolute flex flex-col items-center">
-                    <div className="text-[3.5rem] sm:text-[4rem] font-black text-foreground/50 dark:text-white flex items-center tabular-nums leading-none">
+                    <div className="text-[4rem] sm:text-[5rem] font-black text-foreground/50 dark:text-white flex items-center tabular-nums leading-none">
                         <Digit value={m1} />
                         <Digit value={m2} />
-                        <span className="opacity-50 relative -top-1">:</span>
+                        <span className="opacity-50 relative -top-1 mx-2">:</span>
                         <Digit value={s1} />
                         <Digit value={s2} />
                     </div>
