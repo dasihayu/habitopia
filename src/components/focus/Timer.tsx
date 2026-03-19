@@ -131,7 +131,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                 </svg>
 
                 <div className="absolute flex flex-col items-center">
-                    <div className="text-7xl sm:text-8xl font-black text-foreground/50 dark:text-white flex items-center tabular-nums leading-none">
+                    <div className="text-6xl sm:text-7xl font-black text-foreground/50 dark:text-white flex items-center tabular-nums leading-none">
                         <Digit value={m1} />
                         <Digit value={m2} />
                         <span className="opacity-50 relative -top-1">:</span>
