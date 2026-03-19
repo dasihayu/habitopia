@@ -11,8 +11,8 @@ interface TimerProps {
     questId?: string | null;
 }
 
-// Circumference is constant for r=120, computed once at module load
-const CIRCLE_RADIUS = 120;
+// Circumference is constant for r=142, computed once at module load
+const CIRCLE_RADIUS = 142;
 const CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 
 // Digit spring transition — constant prevents re-creation on each render
@@ -132,7 +132,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
 
                 {/* Time Display */}
                 <div className="absolute flex flex-col items-center">
-                    <div className="text-7xl font-black text-foreground/50 dark:text-white flex items-center tabular-nums">
+                    <div className="text-[4rem] sm:text-7xl tracking-tighter sm:tracking-normal font-black text-foreground/50 dark:text-white flex items-center tabular-nums">
                         <Digit value={m1} />
                         <Digit value={m2} />
                         <span className="mx-1 opacity-50 relative -top-1">:</span>
