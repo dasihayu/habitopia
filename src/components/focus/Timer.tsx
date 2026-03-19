@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, memo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Play, Pause, RotateCcw, CheckCircle, Volume2, VolumeX, Moon } from "lucide-react";
 import { completeQuest } from "@/app/actions/quests";
 import { useTimer } from "@/components/providers/TimerProvider";
@@ -28,7 +28,7 @@ const Digit = memo(function Digit({ value }: { value: string }) {
     return (
         <div className="relative h-[1.1em] w-[0.65em] flex items-center justify-center overflow-hidden">
             <AnimatePresence mode="popLayout" initial={false}>
-                <motion.span
+                <m.span
                     key={value}
                     initial={{ y: "100%", opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
@@ -38,7 +38,7 @@ const Digit = memo(function Digit({ value }: { value: string }) {
                     className="absolute"
                 >
                     {value}
-                </motion.span>
+                </m.span>
             </AnimatePresence>
         </div>
     );
@@ -117,7 +117,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                         strokeWidth="6"
                         fill="transparent"
                     />
-                    <motion.circle
+                    <m.circle
                         cx="160"
                         cy="160"
                         r={CIRCLE_RADIUS}
@@ -146,38 +146,38 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
 
             {/* Controls */}
             <div className="flex items-center gap-6">
-                <motion.button
+                <m.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setIsMuted(m => !m)}
                     className="p-4 glass rounded-2xl text-foreground/50 dark:text-white/50 hover:text-foreground dark:hover:text-white transition cursor-pointer"
                 >
                     {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
-                </motion.button>
+                </m.button>
 
-                <motion.button
+                <m.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={toggleTimer}
                     className="w-20 h-20 rounded-3xl flex items-center justify-center bg-primary text-white shadow-glow transition-all cursor-pointer"
                 >
                     {isActive ? <Pause className="fill-current w-8 h-8" /> : <Play className="fill-current w-8 h-8 ml-1" />}
-                </motion.button>
+                </m.button>
 
-                <motion.button
+                <m.button
                     whileHover={{ scale: 1.1, rotate: -15 }}
                     whileTap={{ scale: 0.9, rotate: -45 }}
                     onClick={resetTimer}
                     className="p-4 glass rounded-2xl text-foreground/50 dark:text-white/50 hover:text-foreground dark:hover:text-white transition cursor-pointer"
                 >
                     <RotateCcw className="w-6 h-6" />
-                </motion.button>
+                </m.button>
             </div>
 
             {/* Completion State */}
             <AnimatePresence>
                 {isCompleted && (
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         className="glass p-8 rounded-3xl text-center space-y-4 border-primary/30"
@@ -185,15 +185,15 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                         <CheckCircle className="w-12 h-12 text-primary mx-auto" />
                         <h4 className="text-2xl font-bold">Focus Session Complete</h4>
                         <p className="text-foreground/50">Great work! Your quest has been rewarded with XP.</p>
-                        <motion.button
+                        <m.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={resetTimer}
                             className="px-8 py-3 bg-primary rounded-xl font-bold shadow-glow text-white w-full cursor-pointer"
                         >
                             Start Another Session
-                        </motion.button>
-                    </motion.div>
+                        </m.button>
+                    </m.div>
                 )}
             </AnimatePresence>
         </div>

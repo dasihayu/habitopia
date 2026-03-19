@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { User, Shield, Zap, TrendingUp, History, Star, Trophy, Calendar, Pencil, Share2, UserPlus, UserCheck } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import PlayerHUD from "@/components/dashboard/PlayerHUD";
 import Modal from "@/components/ui/Modal";
 import { updateProfile, toggleFollow } from "@/app/actions/profile";
@@ -38,7 +38,7 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                 actionSlot={
                     isOwnProfile ? (
                         <>
-                            <motion.button
+                            <m.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={() => setIsEditModalOpen(true)}
@@ -46,8 +46,8 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                                 title="Edit Profile"
                             >
                                 <Pencil className="w-5 h-5 text-foreground/70" />
-                            </motion.button>
-                            <motion.button
+                            </m.button>
+                            <m.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 className="glass p-3 rounded-xl hover:bg-foreground/10 transition-colors cursor-pointer"
@@ -58,10 +58,10 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                                 }}
                             >
                                 <Share2 className="w-5 h-5 text-foreground/70" />
-                            </motion.button>
+                            </m.button>
                         </>
                     ) : (
-                        <motion.button
+                        <m.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={handleFollow}
@@ -69,7 +69,7 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                         >
                             {isFollowing ? <UserCheck className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
                             {isFollowing ? "Following" : "Follow"}
-                        </motion.button>
+                        </m.button>
                     )
                 }
             />
@@ -127,25 +127,25 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                         <div className="flex flex-wrap gap-3">
                             {user.achievements?.length > 0 ? (
                                 user.achievements.slice(0, 4).map((ua: any) => (
-                                    <motion.div
+                                    <m.div
                                         whileHover={{ scale: 1.1, rotate: 5 }}
                                         key={ua.id}
                                         className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-xl flex items-center justify-center border border-black/10 dark:border-white/10 hover:border-primary/50 transition-colors cursor-help hover:shadow-glow"
                                         title={ua.achievement.name}
                                     >
                                         <Trophy className="w-6 h-6 text-primary" />
-                                    </motion.div>
+                                    </m.div>
                                 ))
                             ) : (
                                 /* Demo Badges to match the '12 Badges' stat in PlayerHUD */
                                 [1, 2, 3, 4].map((i) => (
-                                    <motion.div
+                                    <m.div
                                         whileHover={{ scale: 1.1, rotate: 5 }}
                                         key={`demo-badge-${i}`}
                                         className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-xl flex items-center justify-center border border-black/10 dark:border-white/10 hover:border-primary/50 transition-colors cursor-help hover:shadow-glow relative group"
                                     >
                                         <Trophy className="w-6 h-6 text-primary/70 group-hover:text-primary transition-colors" />
-                                    </motion.div>
+                                    </m.div>
                                 ))
                             )}
                         </div>
@@ -168,7 +168,7 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                                 </div>
                             ) : (
                                 user.questHistory.map((item: any) => (
-                                    <motion.div
+                                    <m.div
                                         whileHover={{ scale: 1.02, x: 5 }}
                                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
                                         key={item.id}
@@ -186,7 +186,7 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                                         <div className="text-right">
                                             <div className="text-primary font-black">+{item.xpGained} XP</div>
                                         </div>
-                                    </motion.div>
+                                    </m.div>
                                 ))
                             )}
                         </div>
@@ -208,14 +208,14 @@ export default function ProfileView({ user, isOwnProfile }: { user: any, isOwnPr
                         />
                     </div>
                     {/* Add more fields like interests here if needed */}
-                    <motion.button
+                    <m.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         type="submit"
                         className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-xl hover:brightness-110 shadow-glow transition-all cursor-pointer"
                     >
                         Save Changes
-                    </motion.button>
+                    </m.button>
                 </form>
             </Modal>
         </div>

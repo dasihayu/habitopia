@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { completeQuest } from "@/app/actions/quests";
 import { Sword, CheckCircle, Target } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 
 interface Quest {
     id: string;
@@ -52,7 +52,7 @@ export default function QuestList({ initialQuests }: QuestListProps) {
         <div className="space-y-6">
             <AnimatePresence mode="popLayout">
                 {quests.length === 0 ? (
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
@@ -61,10 +61,10 @@ export default function QuestList({ initialQuests }: QuestListProps) {
                         <CheckCircle className="w-16 h-16 text-primary/20 mx-auto mb-6" />
                         <h3 className="text-2xl font-bold mb-2">Victory!</h3>
                         <p className="text-foreground/40 max-w-xs mx-auto">You&apos;ve mastered all your challenges for today. Come back tomorrow for a new set of quests.</p>
-                    </motion.div>
+                    </m.div>
                 ) : (
                     quests.map((quest) => (
-                        <motion.div
+                        <m.div
                             key={quest.id}
                             // Removed `layout` prop — layout animations measure and mutate DOM each frame,
                             // expensive when list is long. Exit animation still works without it.
@@ -97,12 +97,13 @@ export default function QuestList({ initialQuests }: QuestListProps) {
                                     </span>
                                 </div>
                                 <h4 className="text-xl font-bold group-hover:text-primary transition-colors uppercase tracking-tight truncate">{quest.title}</h4>
+                                <h4 className="text-xl font-bold group-hover:text-primary transition-colors uppercase tracking-tight truncate">{quest.title}</h4>
                                 <p className="text-sm text-foreground/50 leading-relaxed line-clamp-2">{quest.description}</p>
                             </div>
 
                             <div className="flex flex-col items-center md:items-end gap-3 shrink-0">
                                 <div className="text-3xl font-black gradient-text">+{quest.xpReward} XP</div>
-                                <motion.button
+                                <m.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => handleComplete(quest.id)}
@@ -114,9 +115,9 @@ export default function QuestList({ initialQuests }: QuestListProps) {
                                     ) : (
                                         <>Complete <CheckCircle className="w-4 h-4 transition-transform group-hover:scale-125 group-hover:rotate-12" /></>
                                     )}
-                                </motion.button>
+                                </m.button>
                             </div>
-                        </motion.div>
+                        </m.div>
                     ))
                 )}
             </AnimatePresence>

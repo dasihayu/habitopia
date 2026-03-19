@@ -1,10 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export default function DashboardAnimations({ children }: { children: React.ReactNode }) {
     return (
-        <motion.div
+        <m.div
             initial="hidden"
             animate="visible"
             variants={{
@@ -26,6 +26,6 @@ export default function DashboardAnimations({ children }: { children: React.Reac
             className="w-full"
         >
             {children}
-        </motion.div>
+        </m.div>
     );
 }

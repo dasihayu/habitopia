@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
 import MainLayout from "@/components/layout/MainLayout";
-import { cn } from "@/lib/utils";
 import PageTransitionWrapper from "@/components/ui/PageTransitionWrapper";
-import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { TimerProvider } from "@/components/providers/TimerProvider";
+import { ClientProviders } from "@/components/providers/ClientProviders";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,13 +36,13 @@ export default function RootLayout({
           enableSystem
         >
           <TimerProvider>
-            <Sidebar />
-            <MainLayout>
-              <PageTransitionWrapper>
-                {children}
-              </PageTransitionWrapper>
-            </MainLayout>
-            <Toaster />
+            <ClientProviders>
+              <MainLayout>
+                <PageTransitionWrapper>
+                  {children}
+                </PageTransitionWrapper>
+              </MainLayout>
+            </ClientProviders>
           </TimerProvider>
         </ThemeProvider>
       </body>

@@ -1,6 +1,9 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { LazyMotion } from "framer-motion";
+
+const loadFeatures = () => import("@/lib/framer-features").then(res => res.default);
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -16,7 +19,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 willChange: "padding-left",
             }}
         >
-            {children}
+            <LazyMotion features={loadFeatures} strict>
+                {children}
+            </LazyMotion>
         </main>
     );
 }

@@ -2,6 +2,16 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Performance Optimizations */
+.contain-layout {
+  contain: layout paint style;
+}
+
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
+}
+
 :root {
   --background: #f1f5f9;
   --foreground: #0f172a;

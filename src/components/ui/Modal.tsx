@@ -4,7 +4,7 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 
 interface ModalProps {
     isOpen: boolean;
@@ -43,7 +43,7 @@ export default function Modal({
             {isOpen && (
                 <>
                     {/* Backdrop */}
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -55,7 +55,7 @@ export default function Modal({
                         className="fixed inset-0 z-[101] flex items-center justify-center p-4 cursor-pointer"
                         onClick={onClose}
                     >
-                        <motion.div
+                        <m.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -80,7 +80,7 @@ export default function Modal({
                             <div className="p-6 max-h-[80vh] overflow-y-auto custom-scrollbar">
                                 {children}
                             </div>
-                        </motion.div>
+                        </m.div>
                     </div>
                 </>
             )}

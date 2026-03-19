@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 
 // Same cinematic feel as desktop, but lighter values for mobile smoothness:
@@ -10,7 +10,7 @@ export default function PageTransitionWrapper({ children }: { children: React.Re
 
     return (
         <AnimatePresence mode="wait" initial={false}>
-            <motion.div
+            <m.div
                 key={pathname}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -23,7 +23,7 @@ export default function PageTransitionWrapper({ children }: { children: React.Re
                 className="w-full flex-1"
             >
                 {children}
-            </motion.div>
+            </m.div>
         </AnimatePresence>
     );
 }

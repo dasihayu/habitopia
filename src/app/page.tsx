@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { m, AnimatePresence, Variants } from "framer-motion";
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
 import { Sword, Trophy, Timer, Sparkles, ChevronRight, Zap } from "lucide-react";
@@ -43,34 +43,34 @@ export default function LandingPage() {
       <main className="relative z-10 pt-32 pb-20">
         {/* Hero Section */}
         <section className="px-6 mb-32">
-          <motion.div
+          <m.div
             initial="hidden"
             animate="visible"
             variants={containerVariants}
             className="max-w-4xl mx-auto text-center"
           >
-            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-pill border-white/10 mb-8 text-sm font-medium text-primary shadow-glow relative overflow-hidden group">
+            <m.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-pill border-white/10 mb-8 text-sm font-medium text-primary shadow-glow relative overflow-hidden group">
               <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
               <Sparkles className="w-4 h-4 animate-pulse" />
               <span>Next Gen Productivity is Here</span>
-            </motion.div>
+            </m.div>
 
-            <motion.h1
+            <m.h1
               variants={itemVariants}
               className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-6 sm:mb-8 leading-[1.1]"
             >
               Master Your Habits,<br />
               <span className="gradient-text italic">Conquer Your Life.</span>
-            </motion.h1>
+            </m.h1>
 
-            <motion.p
+            <m.p
               variants={itemVariants}
               className="text-base sm:text-lg md:text-xl text-foreground/60 max-w-2xl mx-auto mb-10 sm:mb-12 leading-relaxed px-4"
             >
               The first self-generating productivity RPG. Habitopia turns your daily goals into epic quests, leveling up your digital character while you level up in real life.
-            </motion.p>
+            </m.p>
 
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 px-6">
+            <m.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 px-6">
               <Link
                 href="/register"
                 className="w-full sm:w-auto group relative px-8 sm:px-10 py-4 sm:py-5 bg-primary text-white rounded-2xl font-black text-lg shadow-glow hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 overflow-hidden shimmer-effect"
@@ -84,14 +84,14 @@ export default function LandingPage() {
               >
                 Resume Adventure
               </Link>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         </section>
 
         {/* Features Grid */}
         <section id="features" className="px-6 mb-32">
           <div className="max-w-7xl mx-auto">
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -99,7 +99,7 @@ export default function LandingPage() {
             >
               <h2 className="text-3xl md:text-5xl font-black mb-4">Core Mechanics</h2>
               <p className="text-foreground/50">Everything you need to turn discipline into a game.</p>
-            </motion.div>
+            </m.div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
@@ -125,7 +125,7 @@ export default function LandingPage() {
                   textColor: "text-purple-400"
                 }
               ].map((feat, i) => (
-                <motion.div
+                <m.div
                   key={i}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -142,7 +142,7 @@ export default function LandingPage() {
                   <p className="text-foreground/50 leading-relaxed text-sm">
                     {feat.desc}
                   </p>
-                </motion.div>
+                </m.div>
               ))}
             </div>
           </div>
@@ -150,7 +150,7 @@ export default function LandingPage() {
 
         {/* Call to Action Section */}
         <section className="px-6">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -172,7 +172,7 @@ export default function LandingPage() {
                 Create Free Account
               </Link>
             </div>
-          </motion.div>
+          </m.div>
         </section>
       </main>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { completeOnboarding } from "@/app/actions/auth";
 import {
     Dumbbell,
@@ -79,7 +79,7 @@ export default function OnboardingPage() {
             <div className="w-full max-w-2xl relative">
                 {/* Progress Bar */}
                 <div className="absolute -top-12 left-0 w-full h-1 bg-black/10 dark:bg-white/5 rounded-full overflow-hidden">
-                    <motion.div
+                    <m.div
                         className="h-full bg-primary shadow-glow"
                         initial={{ width: "33%" }}
                         animate={{ width: `${(step / 3) * 100}%` }}
@@ -88,7 +88,7 @@ export default function OnboardingPage() {
 
                 <AnimatePresence mode="wait">
                     {step === 1 && (
-                        <motion.div
+                        <m.div
                             key="step1"
                             initial={{ x: 20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
@@ -123,11 +123,11 @@ export default function OnboardingPage() {
                                     Continue
                                 </button>
                             </div>
-                        </motion.div>
+                        </m.div>
                     )}
 
                     {step === 2 && (
-                        <motion.div
+                        <m.div
                             key="step2"
                             initial={{ x: 20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
@@ -160,11 +160,11 @@ export default function OnboardingPage() {
                                 <button onClick={prevStep} className="px-8 py-3 glass rounded-xl font-bold hover:bg-foreground/5 transition-colors">Back</button>
                                 <button onClick={nextStep} className="px-8 py-3 bg-primary rounded-xl font-bold hover:brightness-110">Continue</button>
                             </div>
-                        </motion.div>
+                        </m.div>
                     )}
 
                     {step === 3 && (
-                        <motion.div
+                        <m.div
                             key="step3"
                             initial={{ x: 20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
@@ -205,7 +205,7 @@ export default function OnboardingPage() {
                                     {loading ? "Generating Quests..." : "Enter Habitopia"}
                                 </button>
                             </div>
-                        </motion.div>
+                        </m.div>
                     )}
                 </AnimatePresence>
             </div>

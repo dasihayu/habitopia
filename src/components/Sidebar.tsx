@@ -19,7 +19,9 @@ import {
 } from "lucide-react";
 import { logout } from "@/app/actions/auth";
 import { cn } from "@/lib/utils";
-import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
+import { m, LayoutGroup, AnimatePresence, LazyMotion } from "framer-motion";
+
+const loadFeatures = () => import("@/lib/framer-features").then(res => res.default);
 
 const injectViewTransitionOrigin = (x: number, y: number) => {
     let styleEl = document.getElementById("vt-origin-style");
@@ -92,7 +94,7 @@ export default function Sidebar() {
     if (isAuthPage) return null;
 
     return (
-        <>
+        <LazyMotion features={loadFeatures} strict>
             {/* Mobile Bottom Nav */}
             <nav suppressHydrationWarning className="fixed bottom-0 left-0 w-full z-[100] px-4 pb-6 md:hidden pointer-events-none">
                 <div className="glass flex items-center justify-around p-3 rounded-2xl border-white/10 shadow-2xl bg-background/80 backdrop-blur-md pointer-events-auto max-w-[400px] mx-auto">
@@ -100,7 +102,7 @@ export default function Sidebar() {
                         const isActive = pathname === href;
                         return (
                             <Link key={href} href={href} className={cn("p-3 rounded-xl relative", isActive ? "text-primary" : "text-foreground/50 hover:text-foreground/80 hover:bg-muted")}>
-                                {isActive && <motion.div layoutId="mobileNav" className="absolute inset-0 bg-primary/10 rounded-xl" />}
+                                {isActive && <m.div layoutId="mobileNav" className="absolute inset-0 bg-primary/10 rounded-xl" />}
                                 <Icon className="w-6 h-6 relative z-10" />
                             </Link>
                         );
@@ -162,7 +164,7 @@ export default function Sidebar() {
             </header>
 
             {/* Desktop Sidebar */}
-            <motion.aside
+            <m.aside
                 initial={false}
                 animate={{ width: isCollapsed ? 80 : 256 }}
                 className={cn(
@@ -173,21 +175,21 @@ export default function Sidebar() {
                 transition={SIDEBAR_MOTION_SPRING}
             >
                 {/* Header / Toggle */}
-                <motion.div
+                <m.div
                     className={cn(
                         "flex items-center h-20 border-b border-border/50 shrink-0 relative",
                         isCollapsed ? "px-3" : "px-4"
                     )}
                 >
-                    <motion.div className="w-14 flex items-center justify-center shrink-0">
-                        <motion.div
+                    <m.div className="w-14 flex items-center justify-center shrink-0">
+                        <m.div
                             className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-glow"
                         >
                             H
-                        </motion.div>
-                    </motion.div>
+                        </m.div>
+                    </m.div>
 
-                    <motion.div
+                    <m.div
                         initial={false}
                         aria-hidden={isCollapsed}
                         animate={{
@@ -199,9 +201,9 @@ export default function Sidebar() {
                         className={cn("flex items-center overflow-hidden flex-1 ml-3", isCollapsed && "pointer-events-none")}
                     >
                         <span className="font-bold text-lg tracking-tight whitespace-nowrap text-foreground">Habitopia</span>
-                    </motion.div>
+                    </m.div>
 
-                    <motion.button
+                    <m.button
                         onClick={() => setIsCollapsed(false)}
                         aria-hidden={!isCollapsed}
                         animate={{
@@ -216,9 +218,9 @@ export default function Sidebar() {
                         )}
                     >
                         <ChevronRight className="w-3 h-3" />
-                    </motion.button>
+                    </m.button>
 
-                    <motion.button
+                    <m.button
                         onClick={() => setIsCollapsed(true)}
                         aria-hidden={isCollapsed}
                         animate={{
@@ -233,8 +235,8 @@ export default function Sidebar() {
                         )}
                     >
                         <ChevronLeft className="w-5 h-5" />
-                    </motion.button>
-                </motion.div>
+                    </m.button>
+                </m.div>
 
                 {/* Navigation */}
                 <LayoutGroup>
@@ -253,7 +255,7 @@ export default function Sidebar() {
                                     )}
                                 >
                                     {isActive && (
-                                        <motion.div
+                                        <m.div
                                             layoutId="activeTab"
                                             className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-xl pointer-events-none"
                                             transition={SIDEBAR_MOTION_SPRING}
@@ -265,7 +267,7 @@ export default function Sidebar() {
                                         <Icon className={cn("w-6 h-6 transition-transform group-hover:scale-110", isActive && "text-primary")} />
                                     </div>
 
-                                    <motion.span
+                                    <m.span
                                         initial={false}
                                         aria-hidden={isCollapsed}
                                         animate={{
@@ -280,7 +282,7 @@ export default function Sidebar() {
                                         )}
                                     >
                                         {label}
-                                    </motion.span>
+                                    </m.span>
                                 </Link>
                             );
                         })}
@@ -328,7 +330,7 @@ export default function Sidebar() {
                                 <Moon className="w-6 h-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 absolute" />
                             </div>
                         </div>
-                        <motion.span
+                        <m.span
                             initial={false}
                             aria-hidden={isCollapsed}
                             animate={{
@@ -340,7 +342,7 @@ export default function Sidebar() {
                             className={cn("whitespace-nowrap overflow-hidden text-sm", isCollapsed && "pointer-events-none")}
                         >
                             Toggle Theme
-                        </motion.span>
+                        </m.span>
                     </button>
 
                     {/* Settings */}
@@ -351,7 +353,7 @@ export default function Sidebar() {
                         <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
                             <Settings className="w-6 h-6 transition-transform group-hover:scale-110" />
                         </div>
-                        <motion.span
+                        <m.span
                             initial={false}
                             aria-hidden={isCollapsed}
                             animate={{
@@ -363,7 +365,7 @@ export default function Sidebar() {
                             className={cn("whitespace-nowrap overflow-hidden text-sm", isCollapsed && "pointer-events-none")}
                         >
                             Settings
-                        </motion.span>
+                        </m.span>
                     </Link>
 
                     {/* Logout */}
@@ -374,7 +376,7 @@ export default function Sidebar() {
                             <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
                                 <LogOut className="w-6 h-6 transition-transform group-hover:scale-110" />
                             </div>
-                            <motion.span
+                            <m.span
                                 initial={false}
                                 aria-hidden={isCollapsed}
                                 animate={{
@@ -386,11 +388,11 @@ export default function Sidebar() {
                                 className={cn("whitespace-nowrap overflow-hidden text-sm font-medium", isCollapsed && "pointer-events-none")}
                             >
                                 Logout
-                            </motion.span>
+                            </m.span>
                         </button>
                     </form>
                 </div>
-            </motion.aside>
-        </>
+            </m.aside>
+        </LazyMotion>
     );
 }

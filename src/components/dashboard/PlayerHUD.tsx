@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useMemo } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Zap, Trophy, Shield, Star } from "lucide-react";
 
 interface PlayerHUDProps {
@@ -41,7 +41,7 @@ export default memo(function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
     );
 
     return (
-        <motion.div
+        <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -53,7 +53,7 @@ export default memo(function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
             <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
                 {/* Avatar & Level Badge */}
                 <div className="relative">
-                    <motion.div
+                    <m.div
                         whileHover={AVATAR_HOVER}
                         transition={AVATAR_TRANSITION}
                         className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-primary/30 shadow-glow cursor-pointer"
@@ -65,15 +65,15 @@ export default memo(function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
                             decoding="async"
                             className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-110"
                         />
-                    </motion.div>
-                    <motion.div
+                    </m.div>
+                    <m.div
                         animate={BADGE_FLOAT}
                         transition={BADGE_TRANSITION}
                         style={{ willChange: "transform" }}
                         className="absolute -bottom-3 -right-3 w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center font-bold text-lg shadow-[0_0_20px_rgba(var(--primary),0.5)] border border-white/20"
                     >
                         {user.level}
-                    </motion.div>
+                    </m.div>
                 </div>
 
                 {/* Info & XP Bar */}
@@ -95,14 +95,14 @@ export default memo(function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
                             <span>{user.xp} / {xpNeeded} XP</span>
                         </div>
                         <div className="h-3 w-full bg-black/10 dark:bg-white/5 rounded-full overflow-hidden border border-black/10 dark:border-white/10">
-                            <motion.div
+                            <m.div
                                 className="h-full bg-gradient-to-r from-primary to-accent relative overflow-hidden rounded-r-full"
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
                                 transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
                             >
                                 {/* Shine effect — uses transform only (GPU composited) */}
-                                <motion.div
+                                <m.div
                                     animate={{ x: ["-100%", "250%"] }}
                                     transition={{
                                         duration: 2.5,
@@ -113,7 +113,7 @@ export default memo(function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
                                     style={{ willChange: "transform", transform: "skewX(-20deg)" }}
                                     className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent"
                                 />
-                            </motion.div>
+                            </m.div>
                         </div>
                     </div>
                 </div>
@@ -131,6 +131,6 @@ export default memo(function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
                     </div>
                 </div>
             </div>
-        </motion.div>
+        </m.div>
     );
 });

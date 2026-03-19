@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Plus, Sparkles } from "lucide-react";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export default function CreateQuestModal() {
     const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +26,7 @@ export default function CreateQuestModal() {
 
     return (
         <>
-            <motion.button
+            <m.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(true)}
@@ -34,7 +34,7 @@ export default function CreateQuestModal() {
             >
                 <Plus className="w-5 h-5" />
                 Create Quest
-            </motion.button>
+            </m.button>
 
             <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Create Custom Quest">
                 <form action={handleSubmit} className="space-y-6">
@@ -63,12 +63,12 @@ export default function CreateQuestModal() {
                         <label htmlFor="difficulty" className="text-sm font-bold text-foreground/70">Difficulty</label>
                         <div className="grid grid-cols-3 gap-2">
                             {['EASY', 'MEDIUM', 'HARD'].map((level) => (
-                                <motion.label whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} key={level} className="cursor-pointer">
+                                <m.label whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} key={level} className="cursor-pointer">
                                     <input type="radio" name="difficulty" value={level} className="peer sr-only" required defaultChecked={level === 'EASY'} />
                                     <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 text-center text-sm font-bold peer-checked:bg-primary/20 peer-checked:border-primary peer-checked:text-primary transition-all hover:bg-black/5 dark:hover:bg-white/5">
                                         {level}
                                     </div>
-                                </motion.label>
+                                </m.label>
                             ))}
                         </div>
                     </div>
@@ -80,14 +80,14 @@ export default function CreateQuestModal() {
                         </div>
                     </div>
 
-                    <motion.button
+                    <m.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         type="submit"
                         className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-xl hover:brightness-110 shadow-glow cursor-pointer"
                     >
                         Create Quest
-                    </motion.button>
+                    </m.button>
                 </form>
             </Modal>
         </>
