@@ -105,10 +105,10 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
     );
 
     return (
-        <div className="flex flex-col items-center justify-center space-y-12">
-            <div className="relative w-80 h-80 flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center space-y-8 sm:space-y-12 w-full max-w-[320px] mx-auto">
+            <div className="relative w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] flex items-center justify-center shrink-0">
                 {/* Progress Circle */}
-                <svg className="w-full h-full -rotate-90 transform" style={{ willChange: "auto" }}>
+                <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 320 320" preserveAspectRatio="xMidYMid meet">
                     <circle
                         cx="160"
                         cy="160"

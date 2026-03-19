@@ -18,9 +18,9 @@ interface PlayerHUDProps {
 // Stat card: use CSS hover instead of motion.div to avoid per-card spring tracking
 const StatCard = memo(function StatCard({ icon, value, label }: { icon: React.ReactNode; value: React.ReactNode; label: string }) {
     return (
-        <div className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center min-w-[100px] cursor-pointer transition-transform duration-200 ease-out hover:scale-105 hover:-translate-y-1 active:scale-95">
+        <div className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-[80px] sm:min-w-[100px] cursor-pointer transition-transform duration-200 ease-out hover:scale-105 hover:-translate-y-1 active:scale-95">
             {icon}
-            <span className="text-xl font-bold">{value}</span>
+            <span className="text-lg sm:text-xl font-bold">{value}</span>
             <span className="text-[10px] text-foreground/40 uppercase tracking-tighter">{label}</span>
         </div>
     );
@@ -45,7 +45,7 @@ export default memo(function PlayerHUD({ user, actionSlot }: PlayerHUDProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="glass p-6 rounded-3xl mb-8 relative overflow-hidden group"
+            className="glass p-4 sm:p-6 rounded-3xl mb-8 relative overflow-hidden group"
         >
             {/* Background Glow — pointer-events off, no transition-all (expensive paint) */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[60px] pointer-events-none" />

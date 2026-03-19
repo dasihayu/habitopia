@@ -14,12 +14,12 @@ export default function DashboardAnimations({ children }: { children: React.Reac
                     scale: 1,
                     y: 0,
                     transition: {
-                        staggerChildren: 0.1,
-                        delayChildren: 0.1,
-                        duration: 0.5,
+                        staggerChildren: 0.05,
+                        delayChildren: 0.05,
+                        duration: 0.4,
                         type: "spring",
-                        stiffness: 200,
-                        damping: 25
+                        stiffness: 100,
+                        damping: 20
                     }
                 }
             }}
