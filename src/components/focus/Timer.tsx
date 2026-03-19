@@ -11,8 +11,8 @@ interface TimerProps {
     questId?: string | null;
 }
 
-// Circumference is constant for r=142, computed once at module load
-const CIRCLE_RADIUS = 142;
+// Circumference is constant for r=148, computed once at module load
+const CIRCLE_RADIUS = 148;
 const CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 
 // Digit spring transition — constant prevents re-creation on each render
@@ -26,7 +26,7 @@ const DIGIT_TRANSITION = {
 // Digit: memo prevents re-render when value unchanged (3 of 4 digits don't change each second)
 const Digit = memo(function Digit({ value }: { value: string }) {
     return (
-        <div className="relative h-[1.1em] w-[0.6em] flex items-center justify-center overflow-hidden">
+        <div className="relative h-[1.1em] w-[0.58em] flex items-center justify-center overflow-hidden">
             <AnimatePresence mode="popLayout" initial={false}>
                 <motion.span
                     key={value}
@@ -114,7 +114,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                         cy="160"
                         r={CIRCLE_RADIUS}
                         className="stroke-foreground/10"
-                        strokeWidth="12"
+                        strokeWidth="6"
                         fill="transparent"
                     />
                     <motion.circle
@@ -122,7 +122,7 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                         cy="160"
                         r={CIRCLE_RADIUS}
                         className="stroke-primary"
-                        strokeWidth="12"
+                        strokeWidth="6"
                         fill="transparent"
                         strokeDasharray={CIRCUMFERENCE}
                         animate={{ strokeDashoffset }}
@@ -130,12 +130,11 @@ export default function Timer({ initialMinutes = 25, questId }: TimerProps) {
                     />
                 </svg>
 
-                {/* Time Display */}
                 <div className="absolute flex flex-col items-center">
-                    <div className="text-5xl sm:text-6xl tracking-tight font-extrabold text-foreground/50 dark:text-white flex items-center tabular-nums">
+                    <div className="text-7xl sm:text-8xl font-black text-foreground/50 dark:text-white flex items-center tabular-nums leading-none">
                         <Digit value={m1} />
                         <Digit value={m2} />
-                        <span className="mx-1 opacity-50 relative -top-1">:</span>
+                        <span className="opacity-50 relative -top-1">:</span>
                         <Digit value={s1} />
                         <Digit value={s2} />
                     </div>
