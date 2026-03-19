@@ -8,6 +8,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
     return (
         <main
+            suppressHydrationWarning
             className="pb-32 md:pb-0 min-h-screen flex flex-col"
             style={{
                 paddingLeft: isAuthPage ? "0px" : "var(--sidebar-width)",

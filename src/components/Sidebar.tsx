@@ -74,7 +74,7 @@ export default function Sidebar() {
     return (
         <>
             {/* Mobile Bottom Nav */}
-            <nav className="fixed bottom-0 left-0 w-full z-[100] px-4 pb-6 md:hidden">
+            <nav suppressHydrationWarning className="fixed bottom-0 left-0 w-full z-[100] px-4 pb-6 md:hidden">
                 <div className="glass flex items-center justify-around p-3 rounded-2xl border-white/10 shadow-2xl bg-background/80 backdrop-blur-md">
                     {NAV_ITEMS.map(({ href, icon: Icon }) => {
                         const isActive = pathname === href;
@@ -145,6 +145,7 @@ export default function Sidebar() {
                 className={cn(
                     "fixed top-0 left-0 h-screen hidden md:flex flex-col z-50 border-r border-border bg-background/50 backdrop-blur-xl"
                 )}
+                suppressHydrationWarning
                 style={{ willChange: "width", contain: "layout paint style" }}
                 transition={SIDEBAR_MOTION_SPRING}
             >
