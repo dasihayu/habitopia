@@ -63,10 +63,11 @@ export default function Sidebar() {
 
     // Sync layout offset with sidebar state (via CSS variables on root).
     useEffect(() => {
+        if (!hasMounted) return;
         const doc = document.documentElement;
         doc.classList.toggle("sidebar-collapsed", isCollapsed);
         doc.setAttribute("data-auth", isAuthPage ? "true" : "false");
-    }, [isCollapsed, isAuthPage]);
+    }, [isCollapsed, isAuthPage, isMobile]);
 
     if (isAuthPage) return null;
 
