@@ -109,6 +109,21 @@ body {
 }
 .dark * {
   scrollbar-color: rgba(210, 210, 210, 0.35) transparent;
+  --sidebar-width: 0px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --sidebar-width: 256px;
+  }
+  
+  :root.sidebar-collapsed {
+    --sidebar-width: 80px;
+  }
+}
+
+:root[data-auth="true"] {
+  --sidebar-width: 0px !important;
 }
 
 /* Glassmorphism Utilities */
@@ -285,30 +300,15 @@ body {
 
 @keyframes vt-reveal {
   from {
-    clip-path: circle(0% at var(--vt-x, 24px) var(--vt-y, 50%));
+    clip-path: circle(0% at var(--vt-x, 50%) var(--vt-y, 50%));
     opacity: 1;
   }
   to {
-    clip-path: circle(175% at var(--vt-x, 24px) var(--vt-y, 50%));
+    clip-path: circle(200% at var(--vt-x, 50%) var(--vt-y, 50%));
     opacity: 1;
   }
 }
 
-/* Mobile: old stays put, new slides up + fades in — natural mobile feel */
-@media (max-width: 768px) {
-  ::view-transition-old(root) {
-    animation: none;  /* Keep old visible as background */
-    z-index: 1;
-  }
-  ::view-transition-new(root) {
-    animation: vt-mobile-in 0.5s cubic-bezier(0, 0, 0.2, 1) forwards;
-    z-index: 2;
-  }
-  @keyframes vt-mobile-in {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-}
 
 /* Fallback: smooth color transition for browsers without View Transitions API (e.g. older iOS Safari) */
 html.theme-transitioning,

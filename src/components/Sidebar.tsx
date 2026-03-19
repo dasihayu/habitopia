@@ -39,9 +39,11 @@ export default function Sidebar() {
     const { theme, setTheme } = useTheme();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const [hasMounted, setHasMounted] = useState(false);
 
     // Handle responsive — debounced to avoid per-pixel re-renders on drag
     useEffect(() => {
+        setHasMounted(true);
         const checkMobile = () => {
             const mobile = window.innerWidth < 768;
             setIsMobile(mobile);
@@ -59,11 +61,12 @@ export default function Sidebar() {
 
     // Stable reference — use module-level LABEL_TRANSITION constant directly
 
-    // Sync layout offset with sidebar state (animate in CSS on main container).
+    // Sync layout offset with sidebar state (via CSS variables on root).
     useEffect(() => {
-        const targetWidth = (isMobile || isAuthPage) ? "0px" : (isCollapsed ? "80px" : "256px");
-        document.documentElement.style.setProperty("--sidebar-width", targetWidth);
-    }, [isCollapsed, isMobile, isAuthPage]);
+        const doc = document.documentElement;
+        doc.classList.toggle("sidebar-collapsed", isCollapsed);
+        doc.setAttribute("data-auth", isAuthPage ? "true" : "false");
+    }, [isCollapsed, isAuthPage]);
 
     if (isAuthPage) return null;
 
@@ -107,15 +110,22 @@ export default function Sidebar() {
                                 }, 500);
                                 return;
                             }
+                            
+                            // Accurate origin: use exact click/touch point, fallback to button center
                             const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                            const x = Math.round(rect.left + rect.width / 2);
-                            const y = Math.round(rect.top + rect.height / 2);
-                            document.documentElement.style.setProperty("--vt-x", `${x}px`);
-                            document.documentElement.style.setProperty("--vt-y", `${y}px`);
-                            const root = document.documentElement;
-                            root.classList.toggle("dark", !isDark);
-                            const transition = document.startViewTransition(() => {});
-                            transition.ready.then(() => setTheme(newTheme));
+                            const x = e.clientX > 0 ? e.clientX : Math.round(rect.left + rect.width / 2);
+                            const y = e.clientY > 0 ? e.clientY : Math.round(rect.top + rect.height / 2);
+                            
+                            // Set coordinates on root and force a reflow to ensure the VT snapshot sees them
+                            const doc = document.documentElement;
+                            doc.style.setProperty("--vt-x", `${x}px`);
+                            doc.style.setProperty("--vt-y", `${y}px`);
+                            void doc.offsetHeight;
+                            
+                            document.startViewTransition(() => {
+                                setTheme(newTheme);
+                                document.documentElement.classList.toggle("dark", newTheme === "dark");
+                            });
                         }}
                         className="p-3 rounded-xl text-foreground/50 hover:text-foreground/80 hover:bg-muted transition-all hover:scale-110 active:scale-95 cursor-pointer"
                     >
@@ -258,10 +268,11 @@ export default function Sidebar() {
                     <button
                         onClick={(e) => {
                             const newTheme = theme === "dark" ? "light" : "dark";
-                            // Get button center for the circle origin
+                            // Accurate origin: use exact click/touch point, fallback to button center
                             const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
-                            const x = Math.round(rect.left + rect.width / 2);
-                            const y = Math.round(rect.top + rect.height / 2);
+                            const x = e.clientX || Math.round(rect.left + rect.width / 2);
+                            const y = e.clientY || Math.round(rect.top + rect.height / 2);
+                            
                             document.documentElement.style.setProperty("--vt-x", `${x}px`);
                             document.documentElement.style.setProperty("--vt-y", `${y}px`);
 
@@ -273,7 +284,10 @@ export default function Sidebar() {
                                 }, 500);
                                 return;
                             }
-                            document.startViewTransition(() => setTheme(newTheme));
+                            document.startViewTransition(() => {
+                                setTheme(newTheme);
+                                document.documentElement.classList.toggle("dark", newTheme === "dark");
+                            });
                         }}
                         className="flex items-center h-12 rounded-xl w-full text-muted-foreground hover:text-foreground hover:bg-foreground/5 relative overflow-hidden group cursor-pointer transition-colors duration-200"
                     >
