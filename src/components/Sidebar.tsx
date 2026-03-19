@@ -94,30 +94,22 @@ export default function Sidebar() {
     return (
         <>
             {/* Mobile Bottom Nav */}
-            <nav suppressHydrationWarning className="fixed bottom-0 left-0 w-full z-[100] px-4 pb-6 md:hidden">
-                <div className="glass flex items-center justify-around p-3 rounded-2xl border-white/10 shadow-2xl bg-background/80 backdrop-blur-md">
+            <nav suppressHydrationWarning className="fixed bottom-0 left-0 w-full z-[100] px-2 sm:px-4 pb-4 sm:pb-6 md:hidden">
+                <div className="glass flex items-center justify-around p-1 sm:p-3 rounded-2xl border-white/10 shadow-2xl bg-background/80 backdrop-blur-md">
                     {NAV_ITEMS.map(({ href, icon: Icon }) => {
                         const isActive = pathname === href;
                         return (
-                            <Link
-                                key={href}
-                                href={href}
-                                className={cn(
-                                    "p-3 rounded-xl transition-all hover:scale-110 active:scale-95",
-                                    isActive
-                                        ? "bg-primary/20 text-primary shadow-glow ring-1 ring-primary/30"
-                                        : "text-foreground/50 hover:text-foreground/80 hover:bg-muted"
-                                )}
-                            >
-                                <Icon className="w-6 h-6" />
+                            <Link key={href} href={href} className={cn("p-2 sm:p-3 rounded-xl relative", isActive ? "text-primary" : "text-foreground/50")}>
+                                {isActive && <motion.div layoutId="mobileNav" className="absolute inset-0 bg-primary/10 rounded-xl" />}
+                                <Icon className="w-5 h-5 sm:w-6 sm:h-6 relative z-10" />
                             </Link>
                         );
                     })}
                     <Link
                         href="/settings"
-                        className="p-3 rounded-xl text-foreground/50 hover:text-foreground/80 hover:bg-muted transition-all hover:scale-110 active:scale-95"
+                        className="p-2 sm:p-3 rounded-xl text-foreground/50 hover:text-foreground/80 hover:bg-muted transition-all hover:scale-110 active:scale-95"
                     >
-                        <Settings className="w-6 h-6" />
+                        <Settings className="w-5 h-5 sm:w-6 sm:h-6" />
                     </Link>
                     <button
                         onClick={(e) => {
@@ -154,11 +146,12 @@ export default function Sidebar() {
                                 });
                             });
                         }}
-                        className="p-3 rounded-xl text-foreground/50 hover:text-foreground/80 hover:bg-muted transition-all hover:scale-110 active:scale-95 cursor-pointer"
+                        className="p-2 sm:p-3 rounded-xl text-foreground/50 hover:text-foreground/80 hover:bg-muted transition-all hover:scale-110 active:scale-95 cursor-pointer"
+                        title="Toggle theme"
                     >
-                        <div className="relative w-6 h-6">
-                            <Sun className="w-6 h-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 absolute" />
-                            <Moon className="w-6 h-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 absolute" />
+                        <div className="relative w-5 h-5 sm:w-6 sm:h-6">
+                            <Sun className="w-5 h-5 sm:w-6 sm:h-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 absolute" />
+                            <Moon className="w-5 h-5 sm:w-6 sm:h-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 absolute" />
                         </div>
                     </button>
                 </div>
@@ -323,8 +316,9 @@ export default function Sidebar() {
                             });
                         }}
                         className="flex items-center h-12 rounded-xl w-full text-muted-foreground hover:text-foreground hover:bg-foreground/5 relative overflow-hidden group cursor-pointer transition-colors duration-200"
+                        title="Toggle theme"
                     >
-                        <div className="w-14 flex items-center justify-center shrink-0 relative z-10">
+                        <div className="w-12 h-12 flex items-center justify-center shrink-0 relative z-10">
                             <div className="relative w-6 h-6 transition-transform group-hover:scale-110">
                                 <Sun className="w-6 h-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 absolute" />
                                 <Moon className="w-6 h-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 absolute" />
