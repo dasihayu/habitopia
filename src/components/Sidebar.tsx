@@ -94,14 +94,14 @@ export default function Sidebar() {
     return (
         <>
             {/* Mobile Bottom Nav */}
-            <nav suppressHydrationWarning className="fixed bottom-0 left-0 w-full z-[100] px-3 sm:px-6 pb-4 sm:pb-6 md:hidden pointer-events-none">
-                <div className="glass flex items-center justify-around p-2 sm:p-3 rounded-2xl border-white/10 shadow-2xl bg-background/80 backdrop-blur-md pointer-events-auto max-w-[400px] mx-auto">
+            <nav suppressHydrationWarning className="fixed bottom-0 left-0 w-full z-[100] px-4 pb-6 md:hidden pointer-events-none">
+                <div className="glass flex items-center justify-around p-3 rounded-2xl border-white/10 shadow-2xl bg-background/80 backdrop-blur-md pointer-events-auto max-w-[400px] mx-auto">
                     {NAV_ITEMS.map(({ href, icon: Icon }) => {
                         const isActive = pathname === href;
                         return (
-                            <Link key={href} href={href} className={cn("p-2 sm:p-3 rounded-xl relative", isActive ? "text-primary" : "text-foreground/50 hover:text-foreground/80 hover:bg-muted")}>
+                            <Link key={href} href={href} className={cn("p-3 rounded-xl relative", isActive ? "text-primary" : "text-foreground/50 hover:text-foreground/80 hover:bg-muted")}>
                                 {isActive && <motion.div layoutId="mobileNav" className="absolute inset-0 bg-primary/10 rounded-xl" />}
-                                <Icon className="w-5 h-5 sm:w-6 sm:h-6 relative z-10" />
+                                <Icon className="w-6 h-6 relative z-10" />
                             </Link>
                         );
                     })}
